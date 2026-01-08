@@ -1,4 +1,4 @@
-package com.mohammadbesharat.atlasmeat.dto;
+package com.mohammadbesharat.atlasmeat.model;
 
 import java.time.LocalDate;
 

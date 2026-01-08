@@ -15,11 +15,6 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("/ping")
-    public String ping(){
-    return "ok";
-    }
-
     @PostMapping
     public Order create(@RequestBody CreateOrderRequest req){
 

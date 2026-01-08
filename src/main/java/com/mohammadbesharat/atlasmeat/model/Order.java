@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.mohammadbesharat.atlasmeat.model.OrderStatus;
+import com.mohammadbesharat.atlasmeat.model.DepositStatus;
+
 
 
 @Entity
@@ -38,7 +41,6 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime cancelledAt;
-    private LocalDateTime refundedAt;
     private String orderDetails;
 
     public Order(){}
@@ -58,25 +60,25 @@ public class Order {
         return customerPhone;
     }
 
-    public LocalDate getScheduledDate(){
-        return scheduledDate;
-    }
+    // public LocalDate getScheduledDate(){
+    //     return scheduledDate;
+    // }
 
-    public OrderStatus getStatus(){
-        return status;
-    }
+    // public OrderStatus getStatus(){
+    //     return status;
+    // }
 
-    public DepositStatus getDepositStatus(){
-        return depositStatus;
-    }
+    // public DepositStatus getDepositStatus(){
+    //     return depositStatus;
+    // }
 
-    public Integer getDepositCents(){
-        return depositCents;
-    }
+    // public Integer getDepositCents(){
+    //     return depositCents;
+    // }
 
-    public String getStripePaymentIntentId(){
-        return stripePaymentIntentId;
-    }
+    // public String getStripePaymentIntentId(){
+    //     return stripePaymentIntentId;
+    // }
 
     public LocalDateTime getCreatedAt(){
         return createdAt;
@@ -86,9 +88,9 @@ public class Order {
         return cancelledAt;
     }
 
-    public LocalDateTime getRefundedAt(){
-        return refundedAt;
-    }
+    // public LocalDateTime getRefundedAt(){
+    //     return refundedAt;
+    // }
 
     public String getOrderDetails(){
         return orderDetails;
@@ -110,25 +112,25 @@ public class Order {
         this.customerPhone = phone;
     }
 
-    public void setScheduledDate(LocalDate date){
-        this.scheduledDate = date;
-    }
+    // public void setScheduledDate(LocalDate date){
+    //     this.scheduledDate = date;
+    // }
 
-    public void setStatus(OrderStatus status){
-        this.status = status;
-    }
+    // public void setStatus(OrderStatus status){
+    //     this.status = status;
+    // }
 
-    public void setDepositStatus(DepositStatus deposit){
-        this.depositStatus = deposit;
-    }
+    // public void setDepositStatus(DepositStatus deposit){
+    //     this.depositStatus = deposit;
+    // }
 
-    public void setDepositCents(int cents){
-        this.depositCents = cents;
-    }
+    // public void setDepositCents(int cents){
+    //     this.depositCents = cents;
+    // }
 
-    public void setStripePaymentIntentId(String stripeId){
-        this.stripePaymentIntentId = stripeId;
-    }
+    // public void setStripePaymentIntentId(String stripeId){
+    //     this.stripePaymentIntentId = stripeId;
+    // }
 
     public void setCreatedAt(LocalDateTime created){
         this.createdAt = created;
@@ -138,9 +140,9 @@ public class Order {
         this.cancelledAt = cancelled;
     }
 
-    public void setRefundedAt(LocalDateTime refunded){
-        this.refundedAt = refunded;
-    }
+    // public void setRefundedAt(LocalDateTime refunded){
+    //     this.refundedAt = refunded;
+    // }
 
     public void setOrderDetails(String details){
         this.orderDetails = details;

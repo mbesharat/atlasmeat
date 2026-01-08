@@ -1,7 +1,7 @@
 package com.mohammadbesharat.atlasmeat.dto;
 
 
-import java.time.LocalDate;
+// import java.time.LocalDate;
 
 public class CreateOrderRequest {
     
@@ -9,7 +9,7 @@ public class CreateOrderRequest {
     public String customerEmail;
     public String customerPhone;
     public String orderDetails;
-    public LocalDate scheduledDate;
+    // public LocalDate scheduledDate;
 
    
     public String getCustomerName(){
@@ -28,9 +28,9 @@ public class CreateOrderRequest {
         return orderDetails;
     }
 
-    public LocalDate getScheduledDate(){
-        return scheduledDate;
-    }
+    // public LocalDate getScheduledDate(){
+    //     return scheduledDate;
+    // }
 
 
     public void setCustomerName(String name){
@@ -49,8 +49,8 @@ public class CreateOrderRequest {
         this.orderDetails = details;
     }
 
-    public void setScheduledDate(LocalDate date){
-        this.scheduledDate = date;
-    }
+    // public void setScheduledDate(LocalDate date){
+    //     this.scheduledDate = date;
+    // }
     
 }
