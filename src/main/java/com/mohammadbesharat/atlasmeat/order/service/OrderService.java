@@ -3,6 +3,8 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
+import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
+
 import static com.mohammadbesharat.atlasmeat.order.exceptions.OrderExceptions.*;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
@@ -53,7 +55,19 @@ public class OrderService {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
-    public Page<Order> getOrders(Pageable pageable){
-        return orderRepository.findAll(pageable);
+    public Page<OrderResponse> getOrders(Pageable pageable){
+        return orderRepository.findAll(pageable).map(this::toDto);
+    }
+
+    private OrderResponse toDto(Order o){
+        return new OrderResponse(
+            o.getId(),
+            o.getCustomerName(),
+            o.getCustomerEmail(),
+            o.getCustomerPhone(),
+            o.getOrderDetails(),
+            o.getCreatedAt(),
+            o.getCancelledAt());
+        
     }
 }

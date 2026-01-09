@@ -2,8 +2,6 @@ package com.mohammadbesharat.atlasmeat.order.domain;
 
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,7 +12,6 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.mohammadbesharat.atlasmeat.future.availability.DepositStatus;
 
 
 
@@ -28,10 +25,6 @@ public class Order {
     private String customerName;
     private String customerEmail;
     private String customerPhone;
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-    @Enumerated(EnumType.STRING)
-    private DepositStatus depositStatus;
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

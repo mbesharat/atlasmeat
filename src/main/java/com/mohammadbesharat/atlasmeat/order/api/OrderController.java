@@ -1,7 +1,7 @@
 package com.mohammadbesharat.atlasmeat.order.api;
 
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
+import com.mohammadbesharat.atlasmeat.order.dto.*;
 import com.mohammadbesharat.atlasmeat.order.service.OrderService;
 
 import org.springframework.web.bind.annotation.*;
@@ -41,8 +41,8 @@ public class OrderController {
         return orderService.findOrderById(id);
     }
 
-    @GetMapping("/orders")
-    public Page<Order> getOrders(
+    @GetMapping
+    public Page<OrderResponse> getOrders(
         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return orderService.getOrders(pageable);
