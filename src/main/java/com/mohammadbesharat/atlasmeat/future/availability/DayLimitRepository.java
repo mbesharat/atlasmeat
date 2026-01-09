@@ -1,4 +1,4 @@
-package com.mohammadbesharat.atlasmeat.repository;
+package com.mohammadbesharat.atlasmeat.future.availability;
 // package com.mohammadbesharat.atlasmeat.future.availability;
 
 // import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.mohammadbesharat.atlasmeat.model;
+package com.mohammadbesharat.atlasmeat.future.availability;
 
 import java.time.LocalDate;
 

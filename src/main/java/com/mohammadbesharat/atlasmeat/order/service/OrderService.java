@@ -1,13 +1,10 @@
-package com.mohammadbesharat.atlasmeat.service;
+package com.mohammadbesharat.atlasmeat.order.service;
 
 
-import com.mohammadbesharat.atlasmeat.dto.CreateOrderRequest;
-// import com.mohammadbesharat.atlasmeat.future.availability.OrderStatus;
-// import com.mohammadbesharat.atlasmeat.future.availability.DayLimit;
-// import com.mohammadbesharat.atlasmeat.future.availability.DayLimitRepository;
-// import com.mohammadbesharat.atlasmeat.future.deposit.DepositStatus;
-import com.mohammadbesharat.atlasmeat.model.Order;
-import com.mohammadbesharat.atlasmeat.repository.OrderRepository;
+import com.mohammadbesharat.atlasmeat.order.domain.Order;
+import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
+import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

@@ -1,4 +1,4 @@
-package com.mohammadbesharat.atlasmeat.model;
+package com.mohammadbesharat.atlasmeat.order.domain;
 
 
 public enum OrderStatus{

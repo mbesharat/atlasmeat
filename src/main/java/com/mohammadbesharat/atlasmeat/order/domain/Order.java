@@ -1,4 +1,4 @@
-package com.mohammadbesharat.atlasmeat.model;
+package com.mohammadbesharat.atlasmeat.order.domain;
 
 
 import jakarta.persistence.Entity;
@@ -10,13 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
-import java.time.LocalDate;
+// import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.mohammadbesharat.atlasmeat.model.OrderStatus;
-import com.mohammadbesharat.atlasmeat.model.DepositStatus;
+import com.mohammadbesharat.atlasmeat.future.availability.DepositStatus;
 
 
 
@@ -30,13 +29,13 @@ public class Order {
     private String customerName;
     private String customerEmail;
     private String customerPhone;
-    private LocalDate scheduledDate;
+    // private LocalDate scheduledDate;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     @Enumerated(EnumType.STRING)
     private DepositStatus depositStatus;
-    private Integer depositCents = 0;
-    private String stripePaymentIntentId;
+    // private Integer depositCents = 0;
+    // private String stripePaymentIntentId;
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

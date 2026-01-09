@@ -1,9 +1,9 @@
-package com.mohammadbesharat.atlasmeat.repository;
-
-// import com.mohammadbesharat.atlasmeat.future.availability.OrderStatus;
-import com.mohammadbesharat.atlasmeat.model.Order;
+package com.mohammadbesharat.atlasmeat.order.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.mohammadbesharat.atlasmeat.order.domain.Order;
+
 import java.util.List;
 import java.time.LocalDate;
 ;

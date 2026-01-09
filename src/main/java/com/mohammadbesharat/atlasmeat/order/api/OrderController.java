@@ -1,8 +1,9 @@
-package com.mohammadbesharat.atlasmeat.controller;
+package com.mohammadbesharat.atlasmeat.order.api;
 
-import com.mohammadbesharat.atlasmeat.dto.CreateOrderRequest;
-import com.mohammadbesharat.atlasmeat.model.Order;
-import com.mohammadbesharat.atlasmeat.service.OrderService;
+import com.mohammadbesharat.atlasmeat.order.domain.Order;
+import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
+import com.mohammadbesharat.atlasmeat.order.service.OrderService;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
