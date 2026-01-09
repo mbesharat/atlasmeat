@@ -34,8 +34,6 @@ public class Order {
     private OrderStatus status;
     @Enumerated(EnumType.STRING)
     private DepositStatus depositStatus;
-    // private Integer depositCents = 0;
-    // private String stripePaymentIntentId;
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -59,26 +57,6 @@ public class Order {
         return customerPhone;
     }
 
-    // public LocalDate getScheduledDate(){
-    //     return scheduledDate;
-    // }
-
-    // public OrderStatus getStatus(){
-    //     return status;
-    // }
-
-    // public DepositStatus getDepositStatus(){
-    //     return depositStatus;
-    // }
-
-    // public Integer getDepositCents(){
-    //     return depositCents;
-    // }
-
-    // public String getStripePaymentIntentId(){
-    //     return stripePaymentIntentId;
-    // }
-
     public LocalDateTime getCreatedAt(){
         return createdAt;
     }
@@ -86,10 +64,6 @@ public class Order {
     public LocalDateTime getCancelledAt(){
         return cancelledAt;
     }
-
-    // public LocalDateTime getRefundedAt(){
-    //     return refundedAt;
-    // }
 
     public String getOrderDetails(){
         return orderDetails;
@@ -111,26 +85,6 @@ public class Order {
         this.customerPhone = phone;
     }
 
-    // public void setScheduledDate(LocalDate date){
-    //     this.scheduledDate = date;
-    // }
-
-    // public void setStatus(OrderStatus status){
-    //     this.status = status;
-    // }
-
-    // public void setDepositStatus(DepositStatus deposit){
-    //     this.depositStatus = deposit;
-    // }
-
-    // public void setDepositCents(int cents){
-    //     this.depositCents = cents;
-    // }
-
-    // public void setStripePaymentIntentId(String stripeId){
-    //     this.stripePaymentIntentId = stripeId;
-    // }
-
     public void setCreatedAt(LocalDateTime created){
         this.createdAt = created;
     }
@@ -138,10 +92,6 @@ public class Order {
     public void setCancelledAt(LocalDateTime cancelled){
         this.cancelledAt = cancelled;
     }
-
-    // public void setRefundedAt(LocalDateTime refunded){
-    //     this.refundedAt = refunded;
-    // }
 
     public void setOrderDetails(String details){
         this.orderDetails = details;
