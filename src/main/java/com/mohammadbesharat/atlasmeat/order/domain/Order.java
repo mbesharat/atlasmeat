@@ -29,7 +29,7 @@ public class Order {
     private String customerName;
     private String customerEmail;
     private String customerPhone;
-    // private LocalDate scheduledDate;
+    private LocalDate scheduledDate;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     @Enumerated(EnumType.STRING)
