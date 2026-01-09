@@ -6,6 +6,12 @@ import com.mohammadbesharat.atlasmeat.order.service.OrderService;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+
+
 
 
 @RestController
@@ -30,5 +36,13 @@ public class OrderController {
 
         return orderService.findOrderById(id);
     }
+
+    @GetMapping("/orders")
+    public Page<Order> getOrders(
+        @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return orderService.getOrders(pageable);
+    }
+    
     
 }

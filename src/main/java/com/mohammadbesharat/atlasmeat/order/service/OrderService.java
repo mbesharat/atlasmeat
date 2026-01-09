@@ -8,6 +8,8 @@ import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 @Service
@@ -42,15 +44,16 @@ public class OrderService {
         order.setCustomerName(req.customerName.trim());
         order.setCustomerPhone(req.customerPhone.trim());
         order.setOrderDetails(req.orderDetails);
-        
-
         //this has the order saved into the DB
         return orderRepository.save(order);
-
     }
 
     public Order findOrderById(Long id){
 
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    public Page<Order> getOrders(Pageable pageable){
+        return orderRepository.findAll(pageable);
     }
 }
