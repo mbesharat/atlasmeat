@@ -1,6 +1,5 @@
 package com.mohammadbesharat.atlasmeat.order.api;
 
-import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.dto.*;
 import com.mohammadbesharat.atlasmeat.order.service.OrderService;
 
