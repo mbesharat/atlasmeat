@@ -15,12 +15,9 @@ import org.springframework.data.domain.Pageable;
 public class OrderService {
     
     public final OrderRepository orderRepository;
-    // public final DayLimitRepository dayLimitRepository;
 
-    //this initializes the values of order and dayLimit rep
     public OrderService(OrderRepository orderRepository){
         this.orderRepository = orderRepository;
-        // this.dayLimitRepository = dayLimitRepository;
     }
 
     
