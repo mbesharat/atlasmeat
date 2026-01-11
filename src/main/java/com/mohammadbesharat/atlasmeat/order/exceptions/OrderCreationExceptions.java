@@ -1,8 +1,8 @@
 package com.mohammadbesharat.atlasmeat.order.exceptions;
 
-public final class OrderExceptions {
+public final class OrderCreationExceptions {
     
-    private OrderExceptions(){};
+    private OrderCreationExceptions(){};
 
     public static BadRequestException missingName(){
 
