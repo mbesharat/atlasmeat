@@ -24,26 +24,28 @@ public class OrderService {
     }
 
     
-    public Order createOrder(CreateOrderRequest req){
+    public OrderResponse createOrder(CreateOrderRequest req){
 
-       
+        Order saved = orderRepository.save(toEntity(req));
+        return toDto(saved);
+    }
 
-        //create order object and set values
+    private Order toEntity(CreateOrderRequest req){
         Order order = new Order();
-
-        order.setCustomerEmail(req.customerEmail().trim());
+        order.setCustomerEmail(req.customerEmail().trim().toLowerCase());
         order.setCustomerName(req.customerName().trim());
         order.setCustomerPhone(req.customerPhone().trim());
         order.setOrderDetails(req.orderDetails());
-
-        //this has the order saved into the DB
-        return orderRepository.save(order);
+        return order;
 
     }
 
     public Order findOrderById(Long id){
-
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    public OrderResponse getOrderById(Long id){
+        return toDto(findOrderById(id));
     }
 
     public Page<OrderResponse> getOrders(Pageable pageable){
