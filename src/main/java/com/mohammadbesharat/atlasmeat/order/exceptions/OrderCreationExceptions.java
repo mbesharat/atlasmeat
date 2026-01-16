@@ -18,9 +18,4 @@ public final class OrderCreationExceptions {
 
         return new BadRequestException("Customer phone number is needed");
     }
-
-    public static BadRequestException missingDetails(){
-
-        return new BadRequestException("Order details are needed");
-    }
 }

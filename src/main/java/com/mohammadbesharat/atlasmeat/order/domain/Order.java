@@ -14,7 +14,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String orderDetails;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "checkout_id", nullable = false)
@@ -47,17 +46,11 @@ public class Order {
     public Long getId(){
         return id;
     }
-    public String getOrderDetails(){
-        return orderDetails;
-    }
     
 
 
     public void setId(Long id){
         this.id = id;
-    }
-    public void setOrderDetails(String details){
-        this.orderDetails = details;
     }
     public void setCheckout(Checkout checkout){
         this.checkout = checkout;

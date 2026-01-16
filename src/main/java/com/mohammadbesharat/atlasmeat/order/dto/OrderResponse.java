@@ -8,7 +8,6 @@ public record OrderResponse(
     String customerName,
     String customerEmail,
     String customerPhone,
-    String orderDetails,
     LocalDateTime createdAt,
     LocalDateTime cancelledAt
 ) {}

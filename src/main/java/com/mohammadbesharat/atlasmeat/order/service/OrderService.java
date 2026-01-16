@@ -32,7 +32,6 @@ public class OrderService {
         order.setCustomerEmail(req.customerEmail().trim().toLowerCase());
         order.setCustomerName(req.customerName().trim());
         order.setCustomerPhone(req.customerPhone().trim());
-        order.setOrderDetails(req.orderDetails());
         return order;
 
     }
@@ -55,7 +54,6 @@ public class OrderService {
             o.getCustomerName(),
             o.getCustomerEmail(),
             o.getCustomerPhone(),
-            o.getOrderDetails(),
             o.getCreatedAt(),
             o.getCancelledAt());
         
