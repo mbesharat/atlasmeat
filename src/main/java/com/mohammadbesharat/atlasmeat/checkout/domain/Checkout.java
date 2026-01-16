@@ -3,7 +3,6 @@ package com.mohammadbesharat.atlasmeat.checkout.domain;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 
 import jakarta.persistence.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;

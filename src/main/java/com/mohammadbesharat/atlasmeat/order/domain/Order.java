@@ -3,7 +3,7 @@ package com.mohammadbesharat.atlasmeat.order.domain;
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,17 +16,17 @@ public class Order {
     private Long id;
     private String orderDetails;
 
-    @ManyToOne(fetch = FetchType.Lazy, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "checkout_id", nullable = false)
     private Checkout checkout;  
 
     @Enumerated(EnumType.STRING)
-    @Column(nullabe = false)
+    @Column(nullable = false)
     private CattleType cattle;
 
     @OneToMany(
         mappedBy = "order",
-        cascade = CasecadeType.All,
+        cascade = CascadeType.ALL,
         orphanRemoval = true
     )
     private List<OrderItem> items = new ArrayList<>();
@@ -38,27 +38,27 @@ public class Order {
 
     public void removeItem(OrderItem item){
         items.remove(item);
-        item.SetOrder(null);
+        item.setOrder(null);
     }
 
     public Order(){}
+
+
     public Long getId(){
         return id;
     }
-
-
     public String getOrderDetails(){
         return orderDetails;
     }
     
+
+
     public void setId(Long id){
         this.id = id;
     }
-
     public void setOrderDetails(String details){
         this.orderDetails = details;
     }
-
     public void setCheckout(Checkout checkout){
         this.checkout = checkout;
     }
