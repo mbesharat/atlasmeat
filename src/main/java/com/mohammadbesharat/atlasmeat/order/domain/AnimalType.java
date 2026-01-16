@@ -1,8 +1,8 @@
 package com.mohammadbesharat.atlasmeat.order.domain;
 
-public enum CattleType {
+public enum AnimalType {
     BEEF,
     LAMB,
     GOAT,
-    PORK
+    HOG
 }

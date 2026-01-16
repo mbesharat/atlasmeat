@@ -22,7 +22,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CattleType cattle;
+    private AnimalType cattle;
 
     @OneToMany(
         mappedBy = "order",
