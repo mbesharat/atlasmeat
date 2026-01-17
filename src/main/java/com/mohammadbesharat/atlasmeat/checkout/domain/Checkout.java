@@ -67,4 +67,7 @@ public class Checkout{
     public void setCustomerPhone(String phone){
         this.customerPhone = phone;
     }
+    public void setStatus(CheckoutStatus status){
+        this.status = status;
+    }
 }

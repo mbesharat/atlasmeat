@@ -12,13 +12,13 @@ public class Cut {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private AnimalType cattletype;
+    private AnimalType animal;
 
     private String code;
     private String displayName;
 
-    public AnimalType getCattleType(){
-        return cattletype;
+    public AnimalType getAnimalType(){
+        return animal;
     }
     public String getCode(){
         return code;
@@ -29,8 +29,8 @@ public class Cut {
 
 
 
-    public void setCattle(AnimalType cattle){
-        this.cattletype = cattle;
+    public void setCattle(AnimalType animal){
+        this.animal = animal;
     }
     public void setCode(String code){
         this.code = code;

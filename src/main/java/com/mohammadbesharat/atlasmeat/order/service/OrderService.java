@@ -29,9 +29,7 @@ public class OrderService {
 
     private Order toEntity(CreateOrderRequest req){
         Order order = new Order();
-        order.setCustomerEmail(req.customerEmail().trim().toLowerCase());
-        order.setCustomerName(req.customerName().trim());
-        order.setCustomerPhone(req.customerPhone().trim());
+        order.setAnimal(req.animal());
         return order;
 
     }

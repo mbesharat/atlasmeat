@@ -21,7 +21,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AnimalType cattle;
+    private AnimalType animal;
 
     @OneToMany(
         mappedBy = "order",
@@ -46,6 +46,9 @@ public class Order {
     public Long getId(){
         return id;
     }
+    public AnimalType getAnimalType(){
+        return animal;
+    }
     
 
 
@@ -54,6 +57,9 @@ public class Order {
     }
     public void setCheckout(Checkout checkout){
         this.checkout = checkout;
+    }
+    public void setAnimal(AnimalType animal){
+        this.animal = animal;
     }
   
    

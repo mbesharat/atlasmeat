@@ -10,7 +10,7 @@ import jakarta.validation.constraints.*;
 public record CreateOrderRequest(
     
     @NotNull(message = "cattle type is required")
-    AnimalType cattleType,
+    AnimalType animal,
     
     @NotNull(message = "items are required")
     @Size(min = 1, message = "at least one item is required")
