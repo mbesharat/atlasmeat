@@ -1,6 +1,7 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,15 +31,22 @@ public class GlobalExceptoinHandler {
     }
 
     @ExceptionHandler(CutNotFound.class)
-    public ResponseEntity<ApiError> handleNoSuchElement(
+    public ResponseEntity<ApiError> handleCutNotFound(
         CutNotFound exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
      @ExceptionHandler(CutAnimalMismatch.class)
-    public ResponseEntity<ApiError> handleNoSuchElement(
+    public ResponseEntity<ApiError> handleCutAnimalMismatch(
         CutAnimalMismatch exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+     @ExceptionHandler(InvalidDateRange.class)
+    public ResponseEntity<ApiError> handleInvalidDateRange(
+        InvalidDateRange exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }

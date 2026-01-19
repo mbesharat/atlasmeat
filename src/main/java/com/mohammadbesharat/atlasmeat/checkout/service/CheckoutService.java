@@ -1,9 +1,12 @@
 package com.mohammadbesharat.atlasmeat.checkout.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
@@ -13,7 +16,9 @@ import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
+import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
@@ -138,10 +143,8 @@ public class CheckoutService {
         for(CreateOrderItemRequest item : items){
             Long cutId = item.cutId();
             Integer qty = item.quantity();
-
             result.merge(cutId, qty, Integer::sum);
         }
-
         return result;
     }
 
@@ -153,7 +156,6 @@ public class CheckoutService {
     public Page<CheckoutResponse> getAllCheckouts(Pageable pageable) {
         
         Page<Checkout> checkouts = checkoutRepository.findAll(pageable);
-
         return checkouts.map(this::toCheckoutResponse);
     }
 
@@ -165,7 +167,6 @@ public class CheckoutService {
     public CheckoutResponse addOrderToCheckout(Long checkoutId, Long orderId){
 
         Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
-
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found with id " + orderId));
 
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
@@ -177,13 +178,44 @@ public class CheckoutService {
         if(alreadyInCheckout){
             throw new IllegalStateException("Order " + orderId + "is already in checkout " + checkoutId);
         }
-
         checkout.getOrders().add(order);
         order.setCheckout(checkout);
-        
         Checkout saved = checkoutRepository.save(checkout);
         return toCheckoutResponse(saved);
     }
 
 
+    public Page<CheckoutResponse> searchCheckouts(
+        CheckoutStatus status,
+        String customerEmail,
+        LocalDate from,
+        LocalDate to,
+        Pageable pageable
+    ){
+        if (from != null && to != null && from.isAfter(to)){
+            throw new InvalidDateRange("From must be on or before to");
+        }
+        LocalDateTime start = null;
+        LocalDateTime endExclusive = null;
+        if (from != null) start = from.atStartOfDay();
+        if (to != null) endExclusive = to.plusDays(1).atStartOfDay();
+
+        Specification<Checkout> spec = (root, query, cb) -> cb.conjunction();
+        if (status != null){
+            spec = spec.and(CheckoutSpecifications.hasStatus(status));
+        }
+        if (customerEmail != null){
+            spec = spec.and(CheckoutSpecifications.customerEmailContains(customerEmail));
+        }
+        if (start != null){
+            spec = spec.and(CheckoutSpecifications.createdAtGte(start));
+        }
+        if (endExclusive != null){
+            spec = spec.and(CheckoutSpecifications.createdAtLt(endExclusive));
+        }
+
+        Page<Checkout> page = checkoutRepository.findAll(spec, pageable);
+
+        return page.map(this::toCheckoutResponse);
+    }
 }
