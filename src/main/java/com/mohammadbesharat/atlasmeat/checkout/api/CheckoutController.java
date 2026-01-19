@@ -48,24 +48,6 @@ public class CheckoutController {
         return ResponseEntity.ok(response);
     }
 
-    //get all checkouts, admin purpose
-    @GetMapping
-    public Page<CheckoutResponse> getAllCheckouts(
-        @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable)
-    {
-        return checkoutService.getAllCheckouts(pageable);
-        
-    }
-
-
-    //add an order to a checkout
-    @PostMapping("/{checkoutId}/orders/{orderId}")
-    public ResponseEntity<CheckoutResponse> addOrderToCheckout(@PathVariable Long checkoutId, @PathVariable Long orderId){
-        CheckoutResponse updated = checkoutService.addOrderToCheckout(checkoutId, orderId);
-        return ResponseEntity.ok(updated);
-
-    }
-
     @GetMapping
     public Page<CheckoutResponse> getCheckouts(
         @RequestParam(required = false) CheckoutStatus status,
@@ -78,6 +60,16 @@ public class CheckoutController {
     {
         return checkoutService.searchCheckouts(status, customerEmail, from, to, pageable);
     }
+
+
+    //add an order to a checkout
+    @PostMapping("/{checkoutId}/orders/{orderId}")
+    public ResponseEntity<CheckoutResponse> addOrderToCheckout(@PathVariable Long checkoutId, @PathVariable Long orderId){
+        CheckoutResponse updated = checkoutService.addOrderToCheckout(checkoutId, orderId);
+        return ResponseEntity.ok(updated);
+
+    }
+
         
         
     
