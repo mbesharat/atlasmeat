@@ -1,4 +1,5 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,10 +13,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RestControllerAdvice
 public class GlobalExceptoinHandler {
+
+
 
     //404 error 
     @ExceptionHandler(OrderNotFoundException.class)
@@ -24,6 +28,14 @@ public class GlobalExceptoinHandler {
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
+
+    @ExceptionHandler(CutNotFound.class)
+    public ResponseEntity<ApiError> handleNoSuchElement(
+        CutNotFound exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(
