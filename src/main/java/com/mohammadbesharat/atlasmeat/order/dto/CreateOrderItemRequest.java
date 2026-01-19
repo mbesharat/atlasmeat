@@ -9,7 +9,7 @@ public record CreateOrderItemRequest (
     Long cutId,
 
     @NotNull(message = "quantity is required")
-    @Size(min = 1, message = "quantity must be at least one")
+    @Min(value = 1, message = "quantity must be at least one")
     Integer quantity
 
 ){}
