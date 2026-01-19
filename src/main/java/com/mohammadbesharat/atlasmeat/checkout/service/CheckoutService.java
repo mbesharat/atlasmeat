@@ -186,7 +186,10 @@ public class CheckoutService {
 
 
     public Page<CheckoutResponse> searchCheckouts(
+        Long checkoutId,
         CheckoutStatus status,
+        String customerName,
+        String customerPhone,
         String customerEmail,
         LocalDate from,
         LocalDate to,
@@ -212,6 +215,12 @@ public class CheckoutService {
         }
         if (endExclusive != null){
             spec = spec.and(CheckoutSpecifications.createdAtLt(endExclusive));
+        }
+        if (customerName != null){
+            spec = spec.and(CheckoutSpecifications.customerNameContains(customerName));
+        }
+        if (customerPhone != null){
+            spec = spec.and(CheckoutSpecifications.customerPhoneContains(customerPhone));
         }
 
         Page<Checkout> page = checkoutRepository.findAll(spec, pageable);
