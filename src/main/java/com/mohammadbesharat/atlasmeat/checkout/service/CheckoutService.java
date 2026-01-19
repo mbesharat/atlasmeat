@@ -2,6 +2,8 @@ package com.mohammadbesharat.atlasmeat.checkout.service;
 
 import java.util.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
@@ -77,6 +79,9 @@ public class CheckoutService {
         return toCheckoutResponse(checkout);
     }
 
+
+
+
     public OrderItemResponse toItemDto(OrderItem item){
         return new OrderItemResponse(
             item.getCut().getId(),
@@ -84,6 +89,11 @@ public class CheckoutService {
             item.getQuantity()
         );
     }
+
+
+
+
+
 
     private CheckoutResponse toCheckoutResponse(Checkout checkout){
 
@@ -98,20 +108,29 @@ public class CheckoutService {
 
         return new CheckoutResponse(
             checkout.getId(),
-            checkout.getName(),
-            checkout.getPhone(),
-            checkout.getEmail(),
+            checkout.getCustomerName(),
+            checkout.getCustomerPhone(),
+            checkout.getCustomerEmail(),
             checkout.getStatus(),
             checkout.getCreatedAt(),
             orderDtos
         );
     }
 
+
+
+
+
     public CheckoutResponse getCheckout(Long checkoutId){
         
         Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
         return toCheckoutResponse(checkout);
     }
+
+
+
+
+
 
     private Map<Long, Integer> mergeCutQuantities(List<CreateOrderItemRequest> items){
         Map<Long, Integer> result = new LinkedHashMap<>();
@@ -126,12 +145,22 @@ public class CheckoutService {
         return result;
     }
 
-    public List<CheckoutResponse> getAllCheckouts() {
-        
-        List<Checkout> checkouts = checkoutRepository.findAll();
 
-        return checkouts.stream().map(this::toCheckoutResponse).toList();
+
+
+
+
+    public Page<CheckoutResponse> getAllCheckouts(Pageable pageable) {
+        
+        Page<Checkout> checkouts = checkoutRepository.findAll(pageable);
+
+        return checkouts.map(this::toCheckoutResponse);
     }
+
+
+
+
+
 
     public CheckoutResponse addOrderToCheckout(Long checkoutId, Long orderId){
 

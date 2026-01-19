@@ -45,13 +45,13 @@ public class Checkout{
     public Long getId(){
         return id;
     }
-    public String getName(){
+    public String getCustomerName(){
         return customerName;
     }
-    public String getEmail(){
+    public String getCustomerEmail(){
         return customerEmail;
     }
-    public String getPhone(){
+    public String getCustomerPhone(){
         return customerPhone;
     }
     public CheckoutStatus getStatus(){

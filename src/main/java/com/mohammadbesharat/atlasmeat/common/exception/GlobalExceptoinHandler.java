@@ -14,7 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @RestControllerAdvice
@@ -41,7 +40,7 @@ public class GlobalExceptoinHandler {
     public ResponseEntity<ApiError> handleNoSuchElement(
         CutAnimalMismatch exception,
         HttpServletRequest request){
-            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }
 
     
