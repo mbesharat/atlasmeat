@@ -27,4 +27,14 @@ public final class CheckoutSpecifications {
     public static Specification<Checkout> createdAtLt(LocalDateTime endExclusive){
         return (root, query, cb) -> cb.lessThan(root.get("createdAt"), endExclusive);
     }
+    public static Specification<Checkout> customerNameContains(String name){
+        return (root, query, cb) -> cb.like(cb.lower(root.get("customerName")), "%" + name.toLowerCase() + "%");
+    }
+    public static Specification<Checkout> customerPhoneContains(String phone){
+        return (root, query, cb) -> cb.like(cb.lower(root.get("customerPhone")), "%" + phone + "%");
+    }
+    public static Specification<Checkout> hadId(Long id){
+        return (root, query, cb) -> cb.equal(root.get("checkoutId"), id);
+    }
+
 }
