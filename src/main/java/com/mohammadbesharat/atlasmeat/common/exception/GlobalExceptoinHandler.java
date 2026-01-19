@@ -1,4 +1,5 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
@@ -32,6 +33,13 @@ public class GlobalExceptoinHandler {
     @ExceptionHandler(CutNotFound.class)
     public ResponseEntity<ApiError> handleNoSuchElement(
         CutNotFound exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+     @ExceptionHandler(CutAnimalMismatch.class)
+    public ResponseEntity<ApiError> handleNoSuchElement(
+        CutAnimalMismatch exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
