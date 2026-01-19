@@ -9,6 +9,7 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
@@ -56,7 +57,7 @@ public class CheckoutService {
                 Long cutId = entry.getKey();
                 Integer quantity = entry.getValue();
 
-                Cut cut = cutRepository.findById(cutId).orElseThrow(()-> new NoSuchElementException("Cut not found " + cutId));
+                Cut cut = cutRepository.findById(cutId).orElseThrow(()-> new CutNotFound("Cut not found " + cutId));
 
                 if(cut.getAnimalType() != order.getAnimalType()){
                     throw new IllegalArgumentException("Cut " + cutId + " (" + cut.getDisplayName() + ") is not valid for animal type " + order.getAnimalType());
