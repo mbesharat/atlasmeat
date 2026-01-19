@@ -2,7 +2,6 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
@@ -22,13 +21,6 @@ public class OrderService {
 
     public OrderService(OrderRepository orderRepository){
         this.orderRepository = orderRepository;
-    }
-
-    private Order toEntity(CreateOrderRequest req){
-        Order order = new Order();
-        order.setAnimal(req.animal());
-        return order;
-
     }
 
     public Order findOrderById(Long id){
