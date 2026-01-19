@@ -30,11 +30,6 @@ public class OrderController {
     }
 
     //take the values from user
-    @PostMapping
-    public OrderResponse create(@Valid @RequestBody CreateOrderRequest req){
-
-        return orderService.createOrder(req);
-    }
     //display order by number to user
     @GetMapping("/{id}")
     public OrderResponse getOrderById(@PathVariable Long id) {
