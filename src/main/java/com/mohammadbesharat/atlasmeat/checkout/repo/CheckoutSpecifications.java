@@ -17,7 +17,7 @@ public final class CheckoutSpecifications {
     }
 
     public static Specification<Checkout> customerEmailContains(String email){
-        return (root, query, cb) -> cb.like(cb.lower(root.get("customerEmail")), "%" + email.toLowerCase() + "5%");
+        return (root, query, cb) -> cb.like(cb.lower(root.get("customerEmail")), "%" + email.toLowerCase() + "%");
     }
 
     public static Specification<Checkout> createdAtGte(LocalDateTime start){
