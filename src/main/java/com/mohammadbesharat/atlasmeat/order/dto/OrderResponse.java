@@ -1,13 +1,13 @@
 package com.mohammadbesharat.atlasmeat.order.dto;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
+import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 
 public record OrderResponse(
 
     Long id,
-    String customerName,
-    String customerEmail,
-    String customerPhone,
-    LocalDateTime createdAt,
-    LocalDateTime cancelledAt
+    AnimalType animal,
+    List<OrderItemResponse> items
+
 ) {}

@@ -16,7 +16,7 @@ public record CreateCheckoutRequest(
     @Email (message = "customer email must be a valid email")
     String customerEmail,
     @NotBlank (message = "customer phone is required")
-    @Size (max = 30, message = "customer phone must be equal to or else than 30 characters")
+    @Size (max = 30, message = "customer phone must be equal to or less than 30 characters")
     String customerPhone,
     @NotNull(message = "orders are required")
     @Size(min = 1, message = "at least one order is required")

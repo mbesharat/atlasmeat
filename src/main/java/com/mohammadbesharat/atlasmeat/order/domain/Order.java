@@ -49,6 +49,9 @@ public class Order {
     public AnimalType getAnimalType(){
         return animal;
     }
+    public List<OrderItem> getItems(){
+        return items;
+    }
     
 
 

@@ -41,6 +41,10 @@ public class Checkout{
         order.setCheckout(null);
     }
 
+
+    public Long getId(){
+        return id;
+    }
     public String getName(){
         return customerName;
     }
@@ -52,6 +56,12 @@ public class Checkout{
     }
     public CheckoutStatus getStatus(){
         return status;
+    }
+    public List<Order> getOrders(){
+        return orders;
+    }
+    public LocalDateTime getCreatedAt(){
+        return createdAt;
     }
 
 

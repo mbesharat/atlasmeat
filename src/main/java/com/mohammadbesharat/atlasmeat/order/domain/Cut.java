@@ -17,6 +17,10 @@ public class Cut {
     private String code;
     private String displayName;
 
+
+    public Long getId(){
+        return id;
+    }
     public AnimalType getAnimalType(){
         return animal;
     }
