@@ -28,7 +28,7 @@ public class GlobalExceptoinHandler {
 
     @ExceptionHandler(CheckoutNotFound.class)
     public ResponseEntity<ApiError> handleCheckoutNotFound(
-        OrderNotFoundException exception,
+        CheckoutNotFound exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
