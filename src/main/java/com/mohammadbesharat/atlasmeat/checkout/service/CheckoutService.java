@@ -13,15 +13,18 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
+import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
@@ -30,7 +33,6 @@ import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
-import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 import jakarta.transaction.Transactional;
@@ -56,32 +58,6 @@ public class CheckoutService {
         checkout.setCustomerPhone(req.customerPhone());
         checkout.setCustomerEmail(req.customerEmail());
         checkout.setStatus(CheckoutStatus.DRAFT);
-
-
-        // for (CreateOrderRequest orderReq : req.orders()){
-        //     Order order = new Order();
-        //     order.setAnimal(orderReq.animal());  
-        //     checkout.AddOrder(order);
-            
-        //     Map<Long, Integer> cutQty = mergeCutQuantities(orderReq.items());
-        //     for (Map.Entry<Long, Integer> entry : cutQty.entrySet()){
-        //         Long cutId = entry.getKey();
-        //         Integer quantity = entry.getValue();
-
-        //         Cut cut = cutRepository.findById(cutId).orElseThrow(()-> new CutNotFound("Cut not found " + cutId));
-
-        //         if(cut.getAnimalType() != order.getAnimalType()){
-        //             throw new CutAnimalMismatch("Cut " + cutId + " (" + cut.getDisplayName() + ") is not valid for animal type " + order.getAnimalType());
-        //         }
-                
-        //         OrderItem item = new OrderItem();
-        //         item.setCut(cut);
-        //         item.setQuantity(quantity);
-
-        //         order.addItem(item);
-        //     }
-
-        // }
 
         checkoutRepository.save(checkout);
         return toCheckoutResponse(checkout);
@@ -211,11 +187,55 @@ public class CheckoutService {
             throw new CheckoutLockedException("remove orders", checkout.getStatus());
         }
 
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotFoundException("Order not found with id " + orderId + " in checkout " + checkoutId));
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout " + checkoutId));
         checkout.removeOrder(order);
     }
 
-    
+    @Transactional
+    public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
+
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        if(checkout.getStatus() != CheckoutStatus.DRAFT){
+            throw new CheckoutLockedException("edit orders", checkout.getStatus());
+        }
+
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout " + checkoutId));
+
+        if (request.animal() == null && request.items() == null){
+            throw new InvalidPatchRequest("Nothing was sent to be updated");
+        }
+        if(request.items() != null && request.items().isEmpty()){
+            throw new InvalidPatchRequest("Nothing was sent to be updated");
+        }
+        
+        AnimalType finalAnimal = (request.animal() != null ? request.animal() : order.getAnimalType());
+        order.setAnimal(finalAnimal);
+
+
+        if(request.items() != null){
+            Map<Long, Integer> cutQty = mergeCutQuantities(request.items());
+            order.getItems().clear(); 
+
+            for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
+                Long cutId = entry.getKey();
+                Integer quantity = entry.getValue();
+
+                Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound("Cut not found with id " + cutId));
+                if(cut.getAnimalType() != finalAnimal){
+                    throw new CutAnimalMismatch("Cut with id " + cutId + " (" + cut.getDisplayName() + ") does not belong to " + finalAnimal);
+                }
+
+                OrderItem item = new OrderItem();
+                item.setCut(cut);
+                item.setQuantity(quantity);
+                order.addItem(item);
+            }
+        }
+
+        Checkout saved = checkoutRepository.save(checkout);
+        return toCheckoutResponse(saved);
+
+    }
 
 
     public Page<CheckoutResponse> searchCheckouts(

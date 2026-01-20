@@ -4,6 +4,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
@@ -53,7 +54,7 @@ public class GlobalExceptoinHandler {
     public ResponseEntity<ApiError> handleCutAnimalMismatch(
         CutAnimalMismatch exception,
         HttpServletRequest request){
-            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
 
     @ExceptionHandler(InvalidDateRange.class)
@@ -82,6 +83,13 @@ public class GlobalExceptoinHandler {
         OrderNotInCheckout exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidPatchRequest.class)
+    public ResponseEntity<ApiError> handleInvalidPatchRequest(
+        InvalidPatchRequest exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }
 
     

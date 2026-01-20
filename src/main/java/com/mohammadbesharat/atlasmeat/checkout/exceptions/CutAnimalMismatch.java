@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
+@ResponseStatus(HttpStatus.CONFLICT)
 public class CutAnimalMismatch extends RuntimeException {
 
      public CutAnimalMismatch(String message){

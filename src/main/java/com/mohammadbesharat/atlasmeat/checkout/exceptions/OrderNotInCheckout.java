@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class OrderNotInCheckout extends RuntimeException {
 
   public OrderNotInCheckout(Long checkoutId, Long orderId) {
-    super("Order with id " + orderId + " is not in checkout with id " + checkoutId);
+    super("Order not found with id " + orderId + " in checkout " + checkoutId);
   }
 
   public OrderNotInCheckout(String message) {
