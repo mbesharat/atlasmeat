@@ -17,6 +17,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;

@@ -2,6 +2,7 @@ package com.mohammadbesharat.atlasmeat.common.exception;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,8 +45,15 @@ public class GlobalExceptoinHandler {
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }
 
-     @ExceptionHandler(InvalidDateRange.class)
+    @ExceptionHandler(InvalidDateRange.class)
     public ResponseEntity<ApiError> handleInvalidDateRange(
+        InvalidDateRange exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidStatusTransition.class)
+    public ResponseEntity<ApiError> handleInvalidStatusTransition(
         InvalidDateRange exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
