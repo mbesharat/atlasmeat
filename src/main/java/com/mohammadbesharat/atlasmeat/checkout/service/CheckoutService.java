@@ -227,4 +227,27 @@ public class CheckoutService {
 
         return page.map(this::toCheckoutResponse);
     }
+
+    @Transactional
+    public CheckoutResponse updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
+        
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        CheckoutStatus currentStatus = checkout.getStatus();
+        if(!isAllowedTransition(currentStatus, newStatus)){
+            throw new InvalidStatusTransition(currentStatus + " cannot be changed to " + newStatus);
+        }
+
+        checkout.setStatus(newStatus);
+        Checkout saved = checkoutRepository.save(checkout);
+        return toCheckoutResponse(saved);
+
+    }
+
+    private boolean isAllowedTransition(CheckoutStatus current, CheckoutStatus next){
+        return switch (current){
+            case DRAFT -> next == CheckoutStatus.SUBMITTED || next == CheckoutStatus.CANCELLED;
+            case SUBMITTED -> next == CheckoutStatus.PAID || next == CheckoutStatus.CANCELLED;
+            case PAID, CANCELLED -> false;
+        };
+    }
 }
