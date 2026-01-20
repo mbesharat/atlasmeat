@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.checkout.api;
 
 import java.time.LocalDate;
 
+import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
 import org.springframework.data.domain.Sort;
 import jakarta.validation.Valid;
@@ -72,6 +75,15 @@ public class CheckoutController {
         return ResponseEntity.ok(updated);
 
     }
+
+    //update checkout status
+    @PatchMapping ("/{checkoutId}/status")
+    public UpdateCheckoutStatusRequest updateCheckoutStatus(@PathVariable Long id, CheckoutStatus status){
+        UpdateCheckoutStatusRequest updated = checkoutService.UpdateCheckoutStatus(Long id, CheckoutStatus status);
+        return updated;
+
+    }
+
 
         
         
