@@ -1,4 +1,5 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
@@ -24,6 +25,14 @@ public class GlobalExceptoinHandler {
 
 
     //404 error 
+
+    @ExceptionHandler(CheckoutNotFound.class)
+    public ResponseEntity<ApiError> handleCheckoutNotFound(
+        OrderNotFoundException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ApiError> handleOrderNotfonud(
         OrderNotFoundException exception,
