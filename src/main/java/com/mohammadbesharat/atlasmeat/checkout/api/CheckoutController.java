@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.checkout.api;
 
 import java.time.LocalDate;
 
+import org.apache.catalina.connector.Response;
 import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,9 +79,9 @@ public class CheckoutController {
 
     //update checkout status
     @PatchMapping ("/{checkoutId}/status")
-    public UpdateCheckoutStatusRequest updateCheckoutStatus(@PathVariable Long id, CheckoutStatus status){
-        UpdateCheckoutStatusRequest updated = checkoutService.UpdateCheckoutStatus(Long id, CheckoutStatus status);
-        return updated;
+    public ResponseEntity<CheckoutResponse> updateStatus(@PathVariable Long checkoutId, @valid @RequestBody  UpdateCheckoutStatusRequest request){
+        CheckoutResponse updated = checkoutService.UpdateCheckoutStatus(checkoutId, request.status());
+        return ResponseEntity.ok(updated);
 
     }
 

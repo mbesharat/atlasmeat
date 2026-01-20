@@ -5,7 +5,6 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateCheckoutStatusRequest(
-    @NotNull
-    Long checkoutId,
+    @NotNull(message = "Status is required")
     CheckoutStatus status
 ) {}
