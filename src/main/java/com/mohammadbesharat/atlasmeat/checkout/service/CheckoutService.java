@@ -19,6 +19,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
@@ -29,6 +30,7 @@ import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
+import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 import jakarta.transaction.Transactional;
@@ -170,7 +172,7 @@ public class CheckoutService {
         Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
         
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("Cannot add orders to checkout with status " + checkout.getStatus());
+            throw new CheckoutLockedException("add orders",  checkout.getStatus());
         }
 
         Order order = new Order(); 
@@ -199,6 +201,18 @@ public class CheckoutService {
         
         Checkout saved = checkoutRepository.save(checkout);
         return toCheckoutResponse(saved);
+    }
+
+    @Transactional
+    public void removeOrderFromCheckout(Long checkoutId, Long orderId){
+        
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        if(checkout.getStatus() != CheckoutStatus.DRAFT){
+            throw new CheckoutLockedException("remove orders", checkout.getStatus());
+        }
+
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotFoundException("Order not found with id " + orderId + " in checkout " + checkoutId));
+        checkout.removeOrder(order);
     }
 
 

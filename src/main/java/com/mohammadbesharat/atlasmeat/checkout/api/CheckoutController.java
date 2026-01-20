@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,6 +75,14 @@ public class CheckoutController {
     public ResponseEntity<CheckoutResponse> addOrderToCheckout(@PathVariable Long checkoutId, @Valid @RequestBody CreateOrderRequest request){
         CheckoutResponse updated = checkoutService.addOrderToCheckout(checkoutId, request);
         return ResponseEntity.ok(updated);
+
+    }
+
+    //Remove order from a checkout
+    @DeleteMapping("/{checkoutId}/orders/{orderId}")
+    public ResponseEntity<Void> removeOrder(@PathVariable Long checkoutId, @PathVariable Long orderId){
+        checkoutService.removeOrderFromCheckout(checkoutId, orderId);
+        return ResponseEntity.noContent().build();
 
     }
 

@@ -46,6 +46,9 @@ public class Order {
     public Long getId(){
         return id;
     }
+    public Checkout getCheckout(){
+        return checkout;
+    }
     public AnimalType getAnimalType(){
         return animal;
     }

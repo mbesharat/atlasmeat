@@ -5,6 +5,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -74,6 +75,13 @@ public class GlobalExceptoinHandler {
         CheckoutLockedException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(OrderNotInCheckout.class)
+    public ResponseEntity<ApiError> handleOrderNotInCheckout(
+        OrderNotInCheckout exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
     

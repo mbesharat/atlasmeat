@@ -13,7 +13,7 @@ public class CheckoutLockedException extends RuntimeException {
         super (message);
     }
     
-    public CheckoutLockedException(CheckoutStatus status){
-        super("Cannot add orders when checkout status is " + status);
+    public CheckoutLockedException(String action, CheckoutStatus status){
+        super("Cannot " + action + " when checkout status is " + status);
     }
 }
