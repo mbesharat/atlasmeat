@@ -28,7 +28,6 @@ import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
-import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 import jakarta.transaction.Transactional;
@@ -53,33 +52,33 @@ public class CheckoutService {
         checkout.setCustomerName(req.customerName());
         checkout.setCustomerPhone(req.customerPhone());
         checkout.setCustomerEmail(req.customerEmail());
-        checkout.setStatus(CheckoutStatus.SUBMITTED);
+        checkout.setStatus(CheckoutStatus.DRAFT);
 
 
-        for (CreateOrderRequest orderReq : req.orders()){
-            Order order = new Order();
-            order.setAnimal(orderReq.animal());
-            checkout.AddOrder(order);
+        // for (CreateOrderRequest orderReq : req.orders()){
+        //     Order order = new Order();
+        //     order.setAnimal(orderReq.animal());  
+        //     checkout.AddOrder(order);
             
-            Map<Long, Integer> cutQty = mergeCutQuantities(orderReq.items());
-            for (Map.Entry<Long, Integer> entry : cutQty.entrySet()){
-                Long cutId = entry.getKey();
-                Integer quantity = entry.getValue();
+        //     Map<Long, Integer> cutQty = mergeCutQuantities(orderReq.items());
+        //     for (Map.Entry<Long, Integer> entry : cutQty.entrySet()){
+        //         Long cutId = entry.getKey();
+        //         Integer quantity = entry.getValue();
 
-                Cut cut = cutRepository.findById(cutId).orElseThrow(()-> new CutNotFound("Cut not found " + cutId));
+        //         Cut cut = cutRepository.findById(cutId).orElseThrow(()-> new CutNotFound("Cut not found " + cutId));
 
-                if(cut.getAnimalType() != order.getAnimalType()){
-                    throw new CutAnimalMismatch("Cut " + cutId + " (" + cut.getDisplayName() + ") is not valid for animal type " + order.getAnimalType());
-                }
+        //         if(cut.getAnimalType() != order.getAnimalType()){
+        //             throw new CutAnimalMismatch("Cut " + cutId + " (" + cut.getDisplayName() + ") is not valid for animal type " + order.getAnimalType());
+        //         }
                 
-                OrderItem item = new OrderItem();
-                item.setCut(cut);
-                item.setQuantity(quantity);
+        //         OrderItem item = new OrderItem();
+        //         item.setCut(cut);
+        //         item.setQuantity(quantity);
 
-                order.addItem(item);
-            }
+        //         order.addItem(item);
+        //     }
 
-        }
+        // }
 
         checkoutRepository.save(checkout);
         return toCheckoutResponse(checkout);
@@ -164,23 +163,39 @@ public class CheckoutService {
 
 
 
-
-    public CheckoutResponse addOrderToCheckout(Long checkoutId, Long orderId){
+    @Transactional
+    public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderReq){
 
         Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found with id " + orderId));
-
+        
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new IllegalStateException("Cannot add orders to submitted checkout");
+            throw new IllegalStateException("Cannot add orders to non-draft checkout");
         }
 
-        boolean alreadyInCheckout = checkout.getOrders().stream().anyMatch(o -> o.getId().equals(orderId));
+        Order order = new Order(); 
+        order.setAnimal(orderReq.animal());
 
-        if(alreadyInCheckout){
-            throw new IllegalStateException("Order " + orderId + "is already in checkout " + checkoutId);
+        checkout.addOrder(order);
+
+        Map<Long, Integer> cutQty = mergeCutQuantities(orderReq.items());
+
+        for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
+            Long cutId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound("Cut not found with id " + cutId));
+
+            if (cut.getAnimalType() != order.getAnimalType()){
+                throw new CutAnimalMismatch("Cut " + cutId + " (" + cut.getDisplayName() + ") is not valid for " + order.getAnimalType());
+            }
+
+            OrderItem item = new OrderItem();
+            item.setCut(cut);
+            item.setQuantity(quantity);
+
+            order.addItem(item);
         }
-        checkout.getOrders().add(order);
-        order.setCheckout(checkout);
+        
         Checkout saved = checkoutRepository.save(checkout);
         return toCheckoutResponse(saved);
     }

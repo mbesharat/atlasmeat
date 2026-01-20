@@ -23,6 +23,8 @@ import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
+import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
+
 import org.springframework.data.domain.Sort;
 import jakarta.validation.Valid;
 
@@ -68,9 +70,9 @@ public class CheckoutController {
 
 
     //add an order to a checkout
-    @PostMapping("/{checkoutId}/orders/{orderId}")
-    public ResponseEntity<CheckoutResponse> addOrderToCheckout(@PathVariable Long checkoutId, @PathVariable Long orderId){
-        CheckoutResponse updated = checkoutService.addOrderToCheckout(checkoutId, orderId);
+    @PostMapping("/{checkoutId}/orders")
+    public ResponseEntity<CheckoutResponse> addOrderToCheckout(@PathVariable Long checkoutId, @Valid @RequestBody CreateOrderRequest request){
+        CheckoutResponse updated = checkoutService.addOrderToCheckout(checkoutId, request);
         return ResponseEntity.ok(updated);
 
     }

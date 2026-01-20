@@ -31,7 +31,7 @@ public class Checkout{
     )
     private List<Order> orders = new ArrayList<>();
 
-    public void AddOrder(Order order){
+    public void addOrder(Order order){
         orders.add(order);
         order.setCheckout(this);
     }
