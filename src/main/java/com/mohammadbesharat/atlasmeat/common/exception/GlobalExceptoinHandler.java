@@ -63,7 +63,7 @@ public class GlobalExceptoinHandler {
 
     @ExceptionHandler(InvalidStatusTransition.class)
     public ResponseEntity<ApiError> handleInvalidStatusTransition(
-        InvalidDateRange exception,
+        InvalidStatusTransition exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }
