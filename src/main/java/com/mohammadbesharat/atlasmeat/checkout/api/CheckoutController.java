@@ -86,6 +86,12 @@ public class CheckoutController {
 
     }
 
+    @PatchMapping("/{checkoutId}/orders/{orderId}")
+    public ResponseEntity<CheckoutResponse> editOrder(@PathVariable Long checkoutId, @PathVariable orderId){
+        checkoutService.editOrder(checkoutId, orderId);
+        
+    }
+
     //update checkout status
     @PatchMapping ("/{checkoutId}/status")
     public ResponseEntity<CheckoutResponse> updateStatus(@PathVariable Long checkoutId, @Valid @RequestBody  UpdateCheckoutStatusRequest request){
