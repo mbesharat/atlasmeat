@@ -1,4 +1,5 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
@@ -66,6 +67,13 @@ public class GlobalExceptoinHandler {
         InvalidStatusTransition exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(CheckoutLockedException.class)
+    public ResponseEntity<ApiError> handleCheckoutLockedException(
+        CheckoutLockedException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
 
     

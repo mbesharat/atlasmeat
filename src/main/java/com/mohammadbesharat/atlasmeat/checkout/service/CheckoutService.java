@@ -13,6 +13,7 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
@@ -169,7 +170,7 @@ public class CheckoutService {
         Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
         
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new IllegalStateException("Cannot add orders to non-draft checkout");
+            throw new CheckoutLockedException("Cannot add orders to checkout with status " + checkout.getStatus());
         }
 
         Order order = new Order(); 
