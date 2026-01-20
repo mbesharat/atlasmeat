@@ -5,7 +5,9 @@ import java.util.List;
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 
+import jakarta.validation.Valid;
+
 public record UpdateOrderRequest(
     AnimalType animal,
-    List<CreateOrderItemRequest> items
+    @Valid List<CreateOrderItemRequest> items
 ) {}

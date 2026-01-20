@@ -215,6 +215,8 @@ public class CheckoutService {
         checkout.removeOrder(order);
     }
 
+    
+
 
     public Page<CheckoutResponse> searchCheckouts(
         Long checkoutId,

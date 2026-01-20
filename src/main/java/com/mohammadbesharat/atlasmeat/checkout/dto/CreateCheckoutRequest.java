@@ -1,10 +1,5 @@
 package com.mohammadbesharat.atlasmeat.checkout.dto;
 
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
-
-import java.util.List;
-
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 public record CreateCheckoutRequest(
