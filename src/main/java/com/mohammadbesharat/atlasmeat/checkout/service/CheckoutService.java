@@ -240,8 +240,17 @@ public class CheckoutService {
 
     }
 
-    @Tansactional 
-    public 
+    @Transactional 
+    public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long cutId){
+
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout with id " + checkoutId));
+
+        Cut cut = cutRepository.findByIdAndCheckoutId(cutId, orderId).orElsethrow(() -> new CutNotInOrder("Cut not found with id " + cutId + " in order with id " + orderId));
+        
+
+    }
 
 
     public Page<CheckoutResponse> searchCheckouts(

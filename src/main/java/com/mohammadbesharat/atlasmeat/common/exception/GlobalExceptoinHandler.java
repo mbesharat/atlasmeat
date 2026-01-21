@@ -3,6 +3,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedExceptio
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotInOrder;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
@@ -81,6 +82,13 @@ public class GlobalExceptoinHandler {
     @ExceptionHandler(OrderNotInCheckout.class)
     public ResponseEntity<ApiError> handleOrderNotInCheckout(
         OrderNotInCheckout exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(CutNotInOrder.class)
+    public ResponseEntity<ApiError> handleCutNotInOrder(
+        CutNotInOrder exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
