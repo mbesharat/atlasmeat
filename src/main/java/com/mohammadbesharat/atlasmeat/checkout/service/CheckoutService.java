@@ -18,6 +18,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedExceptio
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotInOrder;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
@@ -247,8 +248,8 @@ public class CheckoutService {
 
         Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout with id " + checkoutId));
 
-        Cut cut = cutRepository.findByIdAndCheckoutId(cutId, orderId).orElsethrow(() -> new CutNotInOrder("Cut not found with id " + cutId + " in order with id " + orderId));
-        
+        Cut cut = cutRepository.findByIdAndOrderId(cutId, orderId).orElseThrow(() -> new CutNotInOrder("Cut not found with id " + cutId + " in order with id " + orderId));
+
 
     }
 
