@@ -250,6 +250,7 @@ public class CheckoutService {
 
         Cut cut = cutRepository.findByIdAndOrderId(cutId, orderId).orElseThrow(() -> new CutNotInOrder("Cut not found with id " + cutId + " in order with id " + orderId));
 
+        
 
     }
 
