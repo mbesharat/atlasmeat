@@ -13,6 +13,7 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
@@ -242,7 +243,7 @@ public class CheckoutService {
     }
 
     @Transactional 
-    public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long cutId){
+    public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long cutId, UpdateItemRequest request){
 
         Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
 
@@ -250,7 +251,7 @@ public class CheckoutService {
 
         Cut cut = cutRepository.findByIdAndOrderId(cutId, orderId).orElseThrow(() -> new CutNotInOrder("Cut not found with id " + cutId + " in order with id " + orderId));
 
-        
+        if(request.quantity() == null || request)
 
     }
 

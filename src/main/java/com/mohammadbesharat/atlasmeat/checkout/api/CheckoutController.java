@@ -23,6 +23,7 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
@@ -96,8 +97,8 @@ public class CheckoutController {
 
     //patch single item in order
     @PatchMapping ("/{checkoutId}/orders/{orderId}/items/{cutId}")
-    public ResponseEntity<CheckoutResponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long cutId){
-        CheckoutResponse updated = checkoutService.patchItem(checkoutId, orderId, cutId);
+    public ResponseEntity<CheckoutResponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long cutId, @Valid @RequestBody UpdateItemRequest request){
+        CheckoutResponse updated = checkoutService.patchItem(checkoutId, orderId, cutId, request);
         return ResponseEntity.ok(updated);
     }
 
