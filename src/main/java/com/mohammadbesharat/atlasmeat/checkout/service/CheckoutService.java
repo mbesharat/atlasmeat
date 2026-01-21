@@ -202,10 +202,13 @@ public class CheckoutService {
         Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout " + checkoutId));
 
         if (request.animal() == null && request.items() == null){
-            throw new InvalidPatchRequest("Nothing was sent to be updated");
+            throw new InvalidPatchRequest("At least one animal or item must be provided");
         }
         if(request.items() != null && request.items().isEmpty()){
-            throw new InvalidPatchRequest("Nothing was sent to be updated");
+            throw new InvalidPatchRequest("Items must contain at least one item");
+        }
+        if(request.animal() != null && request.items() == null){
+            throw new InvalidPatchRequest("Changing animal requires updating itmes");
         }
         
         AnimalType finalAnimal = (request.animal() != null ? request.animal() : order.getAnimalType());

@@ -86,7 +86,7 @@ public class CheckoutController {
         return ResponseEntity.noContent().build();
 
     }
-
+    //patch order in checkout
     @PatchMapping("/{checkoutId}/orders/{orderId}")
     public ResponseEntity<CheckoutResponse> patchOrder(@PathVariable Long checkoutId, @PathVariable Long orderId, @Valid @RequestBody UpdateOrderRequest request){
         
