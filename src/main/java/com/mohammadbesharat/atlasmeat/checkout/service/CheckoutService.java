@@ -240,6 +240,9 @@ public class CheckoutService {
 
     }
 
+    @Tansactional 
+    public 
+
 
     public Page<CheckoutResponse> searchCheckouts(
         Long checkoutId,

@@ -95,9 +95,9 @@ public class CheckoutController {
     }
 
     //patch single item in order
-    @PatchMappng("/{checkoutId}/orders/{orderId}/items/{cutId}")
-    public ResponseEntity<OrderReponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable cutId){
-        OrderResponse updated = checkoutService.patchItem(checkoutId, orderId, cutId);
+    @PatchMapping ("/{checkoutId}/orders/{orderId}/items/{cutId}")
+    public ResponseEntity<CheckoutResponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable cutId){
+        CheckoutResponse updated = checkoutService.patchItem(checkoutId, orderId, cutId);
         return ResponseEntity.ok(updated);
     }
 
