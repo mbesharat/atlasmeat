@@ -23,6 +23,7 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotInOrder;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderItemNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
@@ -47,11 +48,13 @@ public class CheckoutService {
     public final CheckoutRepository checkoutRepository;
     public final OrderRepository orderRepository;
     public final CutRepository cutRepository;
+    public final OrderItemRepository orderItemRepository;
 
-    public CheckoutService(CheckoutRepository checkoutRepository, CutRepository cutRepository, OrderRepository orderRepository){
+    public CheckoutService(CheckoutRepository checkoutRepository, CutRepository cutRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository){
         this.checkoutRepository = checkoutRepository;
         this.cutRepository = cutRepository;
         this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
     @Transactional
@@ -254,7 +257,12 @@ public class CheckoutService {
             throw new InvalidPatchRequest("Quantity must be 1 or greater");
         }
 
-        OrderItem item = OrderItemRepository.findByOrderIdAndCheckoutIdandCutId(orderId, checkoutId, cutId).orElseThrow(() -> new OrderItemNotFound("Item not found with cut ID " + cutId + " in order with ID " + orderId + " in checkout with ID " + checkoutId));
+        OrderItem item = orderItemRepository.findByOrderIdAndCheckoutIdAndCutId(orderId, checkoutId, cutId).orElseThrow(() -> new OrderItemNotFound("Item not found with cut ID " + cutId + " in order with ID " + orderId + " in checkout with ID " + checkoutId));
+
+        item.setQuantity(request.quantity());
+        orderItemRepository.save(item);
+        return toCheckoutResponse(checkout);
+
     }
 
 
