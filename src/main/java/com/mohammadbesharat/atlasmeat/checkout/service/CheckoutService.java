@@ -34,6 +34,7 @@ import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
+import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
@@ -249,10 +250,11 @@ public class CheckoutService {
 
         Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout with id " + checkoutId));
 
-        Cut cut = cutRepository.findByIdAndOrderId(cutId, orderId).orElseThrow(() -> new CutNotInOrder("Cut not found with id " + cutId + " in order with id " + orderId));
+        if(request.quantity() == null || request.quantity() < 1){
+            throw new InvalidPatchRequest("Quantity must be 1 or greater");
+        }
 
-        if(request.quantity() == null || request)
-
+        OrderItem item = OrderItemRepository.findByOrderIdAndCheckoutIdandCutId(orderId, checkoutId, cutId).orElseThrow(() -> new OrderItemNotFound("Item not found with cut ID " + cutId + " in order with ID " + orderId + " in checkout with ID " + checkoutId));
     }
 
 

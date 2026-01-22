@@ -10,6 +10,5 @@ import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 
 public interface CutRepository extends JpaRepository<Cut, Long>{
     
-    Optional<Cut> findByIdAndOrderId(Long id, Long orderId);
 
 }
