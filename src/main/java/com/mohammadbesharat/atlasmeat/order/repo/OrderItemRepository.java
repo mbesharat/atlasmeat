@@ -11,6 +11,6 @@ import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long>{
     
-    Optional<OrderItem> findByOrderIdAndCheckoutIdAndCutId(Long orderId, Long checkoutId, Long cutId);
+    Optional<OrderItem> findByOrderIdAndOrderCheckoutIdAndCutId(Long orderId, Long checkoutId, Long cutId);
 
 }
