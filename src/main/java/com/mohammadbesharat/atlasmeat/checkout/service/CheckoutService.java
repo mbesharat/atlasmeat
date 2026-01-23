@@ -259,7 +259,17 @@ public class CheckoutService {
 
         item.setQuantity(request.quantity());
         orderItemRepository.save(item);
-        return toCheckoutResponse(checkout);
+
+        return new CheckoutResponse(
+        checkout.getId(),
+        checkout.getCustomerName(),
+        checkout.getCustomerPhone(),
+        checkout.getCustomerEmail(),
+        checkout.getStatus(),
+        checkout.getCreatedAt(),
+        List.of() // 👈 no orders/items mapping
+        );
+
 
     }
 
