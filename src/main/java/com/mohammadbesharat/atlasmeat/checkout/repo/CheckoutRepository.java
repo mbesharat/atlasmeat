@@ -19,6 +19,6 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Long>, JpaSp
         left join fetch i.cut
         Where c.id = :checkoutId
     """)
-    Optional<Checkout> findByIdWithOrderItemsAndCut(@Param("checkoutId") Long checkoutId);
+    Optional<Checkout> findByIdWithOrdersItemsAndCut(@Param("checkoutId") Long checkoutId);
     
 }

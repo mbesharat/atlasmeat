@@ -249,10 +249,11 @@ public class CheckoutService {
     @Transactional 
     public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long cutId, UpdateItemRequest request){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
 
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout with id " + checkoutId));
-
+        if (!orderRepository.existsByIdAndCheckoutId(orderId, checkoutId)){
+            throw new OrderNotInCheckout("Order not found with id " + orderId + " in checkout with id " + checkoutId);
+        }
         if(request.quantity() == null || request.quantity() < 1){
             throw new InvalidPatchRequest("Quantity must be 1 or greater");
         }
