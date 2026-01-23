@@ -95,7 +95,7 @@ public class GlobalExceptoinHandler {
     }
 
     @ExceptionHandler(OrderItemNotFound.class)
-    public ResponseEntity<ApiError> handleCutNotInOrder(
+    public ResponseEntity<ApiError> handleOrderItemNotFound(
         OrderItemNotFound exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
