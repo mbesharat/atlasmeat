@@ -136,9 +136,11 @@ public class GlobalExceptoinHandler {
     public ResponseEntity<ApiError> handleUnexpected(
         Exception exception,
         HttpServletRequest request
-    ){
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request, null);
-    }
+        ){
+            exception.printStackTrace(); // ✅ TEMP: show real error in console
+            return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request, null);
+        }
+
 
     private ValidationError toValidationError(FieldError fe){
         String message = fe.getDefaultMessage() != null ? fe.getDefaultMessage() : "Invalid value";
