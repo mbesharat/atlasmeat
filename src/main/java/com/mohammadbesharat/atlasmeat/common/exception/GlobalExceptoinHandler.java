@@ -84,7 +84,6 @@ public class GlobalExceptoinHandler {
     public ResponseEntity<ApiError> handleOrderNotInCheckout(
         OrderNotInCheckout exception,
         HttpServletRequest request){
-            System.out.println("HANDLER HIT: " + exception.getClass().getName());
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 

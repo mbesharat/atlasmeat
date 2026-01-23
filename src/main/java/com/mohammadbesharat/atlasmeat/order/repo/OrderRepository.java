@@ -12,6 +12,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 
     Optional<Order> findByIdAndCheckoutId(Long id, Long checkoutId);
 
-    boolean existsByIdAndCheckoutId(Long id, Long CheckoutId);
+    boolean existsByIdAndCheckoutId(Long id, Long checkoutId);
     
 }
