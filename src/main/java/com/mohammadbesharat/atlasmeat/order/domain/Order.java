@@ -3,8 +3,8 @@ package com.mohammadbesharat.atlasmeat.order.domain;
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -28,7 +28,8 @@ public class Order {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    private List<OrderItem> items = new ArrayList<>();
+    @OrderBy("id ASC")
+    private Set<OrderItem> items = new HashSet<>();
 
     public void addItem(OrderItem item){
         items.add(item);
@@ -52,7 +53,7 @@ public class Order {
     public AnimalType getAnimalType(){
         return animal;
     }
-    public List<OrderItem> getItems(){
+    public Set<OrderItem> getItems(){
         return items;
     }
     
