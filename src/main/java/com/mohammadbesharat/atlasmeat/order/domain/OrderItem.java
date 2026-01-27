@@ -33,7 +33,9 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-
+    public Long getId(){
+        return id;
+    }
     public Order getOrder(){
         return order;
     }

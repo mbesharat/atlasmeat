@@ -73,6 +73,7 @@ public class CheckoutService {
 
     public OrderItemResponse toItemDto(OrderItem item){
         return new OrderItemResponse(
+            item.getId(),
             item.getCut().getId(),
             item.getCut().getDisplayName(),
             item.getQuantity()
