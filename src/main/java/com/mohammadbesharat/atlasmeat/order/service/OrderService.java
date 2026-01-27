@@ -38,6 +38,7 @@ public class OrderService {
     private OrderResponse toDto(Order o){
         List<OrderItemResponse> itemDtos = o.getItems().stream()
             .map(item -> new OrderItemResponse(
+                    item.getId(),
                     item.getCut().getId(),
                     item.getCut().getDisplayName(),
                     item.getQuantity()
