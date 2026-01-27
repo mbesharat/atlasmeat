@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.checkout.api;
 
 import java.time.LocalDate;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -96,10 +97,16 @@ public class CheckoutController {
     }
 
     //patch single item in order
-    @PatchMapping ("/{checkoutId}/orders/{orderId}/items/{cutId}")
-    public ResponseEntity<CheckoutResponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long cutId, @Valid @RequestBody UpdateItemRequest request){
-        CheckoutResponse updated = checkoutService.patchItem(checkoutId, orderId, cutId, request);
+    @PatchMapping ("/{checkoutId}/orders/{orderId}/items/{orderItemId}")
+    public ResponseEntity<CheckoutResponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long orderItemId, @Valid @RequestBody UpdateItemRequest request){
+        CheckoutResponse updated = checkoutService.patchItem(checkoutId, orderId, orderItemId, request);
         return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping ("/{checkoutId}/orders/{orderId}/items/{orderItemId}")
+    public ResponseEntity<Void> deleteItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long orderItemId){
+        checkoutService.removeItem(checkoutId, orderId, orderItemId);
+        return ResponseEntity.noContent().build();
     }
 
     //update checkout status
