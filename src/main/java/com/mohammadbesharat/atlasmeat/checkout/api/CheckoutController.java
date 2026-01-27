@@ -105,7 +105,7 @@ public class CheckoutController {
 
     @DeleteMapping ("/{checkoutId}/orders/{orderId}/items/{orderItemId}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long orderItemId){
-        checkoutService.removeItem(checkoutId, orderId, orderItemId);
+        checkoutService.removeItemFromOrder(checkoutId, orderId, orderItemId);
         return ResponseEntity.noContent().build();
     }
 
