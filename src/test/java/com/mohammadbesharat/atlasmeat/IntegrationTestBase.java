@@ -1,5 +1,6 @@
 package com.mohammadbesharat.atlasmeat;
 
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -9,7 +10,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
 public abstract class IntegrationTestBase {
 
@@ -26,4 +28,3 @@ public abstract class IntegrationTestBase {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
 }
-
