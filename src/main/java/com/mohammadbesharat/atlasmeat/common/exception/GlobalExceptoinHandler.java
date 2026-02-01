@@ -162,7 +162,7 @@ public class GlobalExceptoinHandler {
             status.getReasonPhrase(),
             message,
             request.getRequestURI(),
-            validationErrors
+            safeErrors
         );
         
         return ResponseEntity.status(status).body(body);
