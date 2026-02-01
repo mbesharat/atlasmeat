@@ -2,36 +2,16 @@ package com.mohammadbesharat.atlasmeat;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
-import com.mohammadbesharat.atlasmeat.order.domain.Cut;
-import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
-import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
-
 class CheckoutIntegrationTest extends IntegrationTestBase{
-
-    @Autowired CutRepository cutRepository;
-    @Autowired OrderItemRepository orderItemRepository;
 
     private long ribeyeId;
 
     @BeforeEach
     void seedCuts(){
-        cutRepository.deleteAll();
-
-        Cut ribeye = new Cut();
-        ribeye.setAnimal(AnimalType.BEEF);
-        ribeye.setCode("RIBEYE");
-        ribeye.setDisplayName("Ribeye");
-        ribeyeId = cutRepository.save(ribeye).getId();
-
-        Cut brisket = new Cut();
-        brisket.setAnimal(AnimalType.BEEF);
-        brisket.setCode("BRISKET");
-        brisket.setDisplayName("Brisket");
-        cutRepository.save(brisket);
+        clearDB();
+        ribeyeId = seedBeefCut("RIBEYE", "Ribeye");
     }
 
     @Test

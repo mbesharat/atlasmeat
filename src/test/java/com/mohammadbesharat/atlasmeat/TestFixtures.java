@@ -1,5 +1,6 @@
 package com.mohammadbesharat.atlasmeat;
 
+
 public final class TestFixtures {
 
     private TestFixtures(){}
@@ -42,5 +43,14 @@ public final class TestFixtures {
             "quantity" : %d
         }        
         """.formatted(quantity);
+    }
+
+    public static String updateCheckoutStatus(String status){
+        return
+        """
+        {
+            "status" : "%s"
+        }        
+        """.formatted(status);
     }
 }

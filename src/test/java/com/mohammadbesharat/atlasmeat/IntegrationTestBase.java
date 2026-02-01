@@ -13,6 +13,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
+import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
+import com.mohammadbesharat.atlasmeat.order.domain.Cut;
+import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
+import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
+import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,6 +31,10 @@ public abstract class IntegrationTestBase {
 
     @Autowired protected MockMvc mvc;
     @Autowired protected ObjectMapper mapper;
+    @Autowired CheckoutRepository checkoutRepository;
+    @Autowired OrderRepository orderRepository;
+    @Autowired OrderItemRepository orderItemRepository;
+    @Autowired protected CutRepository cutRepository;
     
     static PostgreSQLContainer<?> postgres; 
     static{
@@ -40,6 +50,24 @@ public abstract class IntegrationTestBase {
 
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     }
+
+    //SEED HELPERS
+    protected void clearDB(){
+        checkoutRepository.deleteAll();
+        orderRepository.deleteAll();
+        orderItemRepository.deleteAll();
+        cutRepository.deleteAll();
+    }
+    
+    protected long seedBeefCut(String code, String displayName){
+        Cut cut= new Cut();
+        cut.setAnimal(AnimalType.BEEF);
+        cut.setCode(code);
+        cut.setDisplayName(displayName);
+        return cutRepository.save(cut).getId();
+    }
+
+
 
     //TRANSPORT HELPERS
     protected ResultActions postJson(String urlTemplate, String body, Object... uriVars) throws Exception{
@@ -75,13 +103,12 @@ public abstract class IntegrationTestBase {
     //DRIVER HELPERS
     protected long createCheckoutAndGetId() throws Exception{
 
-        String response = postJson("/checkouts", 
-            TestFixtures.createValidCheckout())
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.checkoutId").exists())
-            .andExpect(jsonPath("$.status").value("DRAFT"))
-            .andReturn().getResponse().getContentAsString();
-        return mapper.readTree(response).get("checkoutId").asLong();
+        String response = postJsonAndReturnBody("/checkouts", 
+            TestFixtures.createValidCheckout());
+
+        return mapper.readTree(response)
+            .get("checkoutId")
+            .asLong();
     }
 
     protected OrderIds addBeefOrderAndGetIds(long checkoutId, long cutId, int quantity) throws Exception{

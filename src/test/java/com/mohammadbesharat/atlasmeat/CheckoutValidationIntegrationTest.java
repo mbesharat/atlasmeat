@@ -7,7 +7,7 @@ class CheckoutValidationIntegrationTest extends IntegrationTestBase{
 
     
     @Test
-    void testMissingEmailValidation() throws Exception{
+    void return400WhenMissingEmail() throws Exception{
 
         //POST /checkouts with invalid email
         postJson("/checkouts", TestFixtures.createCheckoutMissingEmail())
@@ -17,4 +17,5 @@ class CheckoutValidationIntegrationTest extends IntegrationTestBase{
             .andExpect(jsonPath("$.validationErrors[0].field").value("customerEmail"))
             .andExpect(jsonPath("$.validationErrors[0].message").value("customer email is required"));
     }
+
 }
