@@ -14,7 +14,7 @@ class CheckoutValidationIntegrationTest extends IntegrationTestBase{
         postJson("/checkouts", TestFixtures.createCheckoutMissingName())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.validationErrors[0].message")
-                .value("custoemr name is required"));
+                .value("customer name is required"));
     }
 
     @Test 
@@ -23,18 +23,41 @@ class CheckoutValidationIntegrationTest extends IntegrationTestBase{
         //POST /checkouts with missing customerPhone
         postJson("/checkouts", TestFixtures.createCheckoutMissingPhone())
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.validationErrors[0]")
+            .andExpect(jsonPath("$.validationErrors[0].message")
                 .value("customer phone is required"));
     }
 
     @Test
     void return400WhenMissingEmail() throws Exception{
 
-        //POST /checkouts with invalid customerEmail
+        //POST /checkouts with missing customerEmail
         postJson("/checkouts", TestFixtures.createCheckoutMissingEmail())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.validationErrors[0].message")
                 .value("customer email is required"));
+    }
+
+    @Test
+    void return400WhenMissingNameAndEmail() throws Exception{
+
+        //POST /checkouts with missing customerName and customerEmail
+        postJson("/checkouts", TestFixtures.createCheckoutMissingNameAndEmail())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors").isArray())
+            .andExpect(jsonPath("$.validationErrors[?(@.field =='customerName')].message")
+                .value("customer name is required"))
+            .andExpect(jsonPath("$.validationErrors[?(@.field == 'customerEmail')].message")
+                .value("customer email is required"));
+    }
+
+    @Test
+    void return400WhenWhiteSpace() throws Exception{
+
+        //POST /checkouts with white space in place of customerName
+        postJson("/checkouts", TestFixtures.createCheckoutWhitespaceName())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.validationErrors[0].message")
+                .value("customer name is required"));
     }
 
 
@@ -57,7 +80,7 @@ class CheckoutValidationIntegrationTest extends IntegrationTestBase{
         postJson("/checkouts", TestFixtures.createCheckoutPhoneTooLong())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.validationErrors[0].message")
-                .value("customer phone must be less than or equal to 11 characters"));
+                .value("customer phone must be less than or equal to 12 characters"));
     }
 
     @Test
@@ -69,6 +92,8 @@ class CheckoutValidationIntegrationTest extends IntegrationTestBase{
             .andExpect(jsonPath("$.validationErrors[0].message")
                 .value("customer email must be a valid email"));
     }
+
+
 
 
 }

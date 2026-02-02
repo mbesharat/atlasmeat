@@ -79,6 +79,26 @@ public final class TestFixtures {
         """;
     }
 
+    public static String createCheckoutMissingNameAndEmail(){
+        return
+        """
+        {
+            "customerPhone" : "111-222-3333"
+        }        
+        """;
+    }
+
+    public static String createCheckoutWhitespaceName(){
+        return
+        """
+        {
+            "customerName" : " ",
+            "customerPhone" : "111-222-3333",
+            "customerEmail" : "john@email.com"
+        }
+        """;
+    }
+
     public static String addBeefOrder(long cutId, int quantity){
         return
         """
