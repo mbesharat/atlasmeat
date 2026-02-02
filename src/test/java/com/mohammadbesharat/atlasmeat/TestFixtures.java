@@ -16,6 +16,48 @@ public final class TestFixtures {
         """;
     }
 
+    public static String createCheckoutMissingName(){
+        return
+        """
+        {
+            "customerPhone" : "111-222-3333",
+            "customerEmail" : "john@email.com"
+        }        
+        """;
+    }
+
+    public static String createCheckoutNameTooLong(){
+        return
+        """
+        {
+            "customerName" : "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+            "customerPhone" : "111-222-3333",
+            "customerEmail" : "john@email.com"
+        }        
+        """;
+    }
+
+    public static String createCheckoutMissingPhone(){
+        return
+        """
+        {
+            "customerName" : "John Doe",
+            "customerEmail" : "john@email.com"
+        }        
+        """;
+    }
+
+    public static String createCheckoutPhoneTooLong(){
+        return
+        """
+        {
+            "customerName" : "John Doe",
+            "customerPhone" : "00-111-222-3333",
+            "customerEmail" : "john@email.com"
+        }        
+        """;
+    }
+
     public static String createCheckoutMissingEmail(){
         return 
         """
@@ -23,6 +65,17 @@ public final class TestFixtures {
             "customerName" : "John Doe",
             "customerPhone" : "111-222-3333"
         }     
+        """;
+    }
+
+    public static String createCheckoutWrongEmailFormat(){
+        return
+        """
+        {
+            "customerName" : "John Doe",
+            "customerPhone" : "111-222-3333",
+            "customerEmail" : "john@email"
+        }
         """;
     }
 
@@ -53,4 +106,18 @@ public final class TestFixtures {
         }        
         """.formatted(status);
     }
+
+    public static String updateCheckoutSubmitted(){
+        return updateCheckoutStatus("SUBMITTED");
+    }
+
+    public static String updateCheckoutPaid(){
+        return updateCheckoutStatus("PAID");
+    }
+
+    public static String updateCheckoutCancelled(){
+        return updateCheckoutStatus("CANCELLED");
+    }
+
+
 }

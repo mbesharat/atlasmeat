@@ -12,6 +12,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
@@ -70,10 +72,15 @@ public abstract class IntegrationTestBase {
 
 
     //TRANSPORT HELPERS
+    protected ResultActions assertJsonResponse(ResultActions actions) throws Exception{
+        return actions.andExpect(content().contentTypeCompatibleWith("application/json"));
+    }
+
     protected ResultActions postJson(String urlTemplate, String body, Object... uriVars) throws Exception{
-        return mvc.perform(post(urlTemplate, uriVars)
+        ResultActions actions = mvc.perform(post(urlTemplate, uriVars)
                 .contentType("application/json")
                 .content(body));
+        return assertJsonResponse(actions);
     }
 
     protected String postJsonAndReturnBody(String urlTemplate, String body, Object... uriVars) throws Exception{
@@ -84,17 +91,20 @@ public abstract class IntegrationTestBase {
     }
 
     protected ResultActions getJson(String urlTemplate, Object... uriVars) throws Exception {
-        return mvc.perform(get(urlTemplate, uriVars));
+        ResultActions actions = mvc.perform(get(urlTemplate, uriVars));
+        return assertJsonResponse(actions);
     }
 
     protected ResultActions patchJson(String urlTemplate, String body, Object... uriVars) throws Exception{
-        return mvc.perform(patch(urlTemplate, uriVars)
+        ResultActions actions = mvc.perform(patch(urlTemplate, uriVars)
                 .contentType("application/json")
                 .content(body));
+        return assertJsonResponse(actions);
     }
 
     protected ResultActions deleteJson(String urlTemplate, Object... uriVars) throws Exception{
-        return mvc.perform(delete(urlTemplate, uriVars));
+        return mvc.perform(delete(urlTemplate, uriVars))
+            .andExpect(status().isNoContent());
     }
 
 
@@ -113,14 +123,15 @@ public abstract class IntegrationTestBase {
 
     protected OrderIds addBeefOrderAndGetIds(long checkoutId, long cutId, int quantity) throws Exception{
         String response = postJson("/checkouts/{checkoutId}/orders", 
-                            TestFixtures.addBeefOrder(cutId, quantity), checkoutId).andExpect(status().isOk())
+                            TestFixtures.addBeefOrder(cutId, quantity), checkoutId)
+                            .andExpect(status().isOk())
                             .andExpect(jsonPath("$.orders[0].id").exists())
                             .andExpect(jsonPath("$.orders[0].animal").value("BEEF"))
                             .andExpect(jsonPath("$.orders[0].items[0].orderItemId").exists())
                             .andExpect(jsonPath("$.orders[0].items[0].quantity").value(quantity))
                             .andReturn()
-                            .getResponse().
-                            getContentAsString();
+                            .getResponse()
+                            .getContentAsString();
         var tree = mapper.readTree(response);
         long orderId = tree.at("/orders/0/id").asLong();
         long orderItemId = tree.at("/orders/0/items/0/orderItemId").asLong();
@@ -129,6 +140,12 @@ public abstract class IntegrationTestBase {
 
     protected ResultActions getCheckout(long checkoutId) throws Exception{
         return getJson("/checkouts/{checkoutId}", checkoutId)
+                .andExpect(status().isOk());
+    }
+
+    protected ResultActions submitCheckout(long checkoutId) throws Exception{
+        return patchJson("/checkouts/{checkoutId}/status", 
+                TestFixtures.updateCheckoutSubmitted(), checkoutId)
                 .andExpect(status().isOk());
     }
 

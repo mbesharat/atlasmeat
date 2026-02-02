@@ -20,7 +20,8 @@ class CheckoutNotFoundIntegrationTest extends IntegrationTestBase {
         
         getJson("/checkouts/{checkoutId}", 99999)
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value("Checkout not found with id " + 99999));
+            .andExpect(jsonPath("$.message")
+            .value("Checkout not found with id " + 99999));
     }
 
     @Test
@@ -29,7 +30,8 @@ class CheckoutNotFoundIntegrationTest extends IntegrationTestBase {
         postJson("/checkouts/{checkoutId}/orders", 
             TestFixtures.addBeefOrder(1, 3), 99999)
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value("Checkout not found with id " + 99999));
+            .andExpect(jsonPath("$.message")
+            .value("Checkout not found with id " + 99999));
     }
 
     @Test

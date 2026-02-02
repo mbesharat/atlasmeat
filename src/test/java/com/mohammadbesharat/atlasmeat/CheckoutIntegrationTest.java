@@ -36,8 +36,7 @@ class CheckoutIntegrationTest extends IntegrationTestBase{
 
         //DELETE item
         deleteJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}", 
-            checkoutId, orderId, orderItemId)
-            .andExpect(status().isNoContent());
+            checkoutId, orderId, orderItemId);
 
         //GET checkout and assert items empty
         getCheckout(checkoutId)

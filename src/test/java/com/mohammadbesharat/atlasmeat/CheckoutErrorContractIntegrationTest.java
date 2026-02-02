@@ -21,6 +21,8 @@ class CheckoutErrorContractIntegrationTest extends IntegrationTestBase{
         postJson("/checkouts", 
             TestFixtures.createCheckoutMissingEmail())
             .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.status")
+                .value(400))
             .andExpect(jsonPath("$.error")
                 .value("Bad Request"))
             .andExpect(jsonPath("$.message")
@@ -33,6 +35,8 @@ class CheckoutErrorContractIntegrationTest extends IntegrationTestBase{
     void return404ErrorShape_whenCheckoutNotFound() throws Exception{
         getJson("/checkouts/{checkoutId}", 99999)
             .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status")
+                .value(404))
             .andExpect(jsonPath("$.error")
                 .value("Not Found"))
             .andExpect(jsonPath("$.message")
@@ -45,14 +49,14 @@ class CheckoutErrorContractIntegrationTest extends IntegrationTestBase{
         long checkoutId = createCheckoutAndGetId();
         OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 5);
 
-        patchJson("/checkouts/{checkoutId}/status", 
-            TestFixtures.updateCheckoutStatus("SUBMITTED"), checkoutId)
-            .andExpect(status().isOk());
+        submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}",
             TestFixtures.patchItemQuantity(10), 
             checkoutId, ids.orderId(), ids.orderItemId())
             .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.status")
+                .value(409))
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
             .andExpect(jsonPath("$.message")

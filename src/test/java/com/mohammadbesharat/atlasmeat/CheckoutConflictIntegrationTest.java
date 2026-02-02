@@ -22,10 +22,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         long checkoutId = createCheckoutAndGetId();
         OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 5);
         
-        patchJson("/checkouts/{checkoutId}/status", 
-            TestFixtures.updateCheckoutStatus("SUBMITTED"), 
-            checkoutId)
-            .andExpect(status().isOk());
+        submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}", 
             TestFixtures.patchItemQuantity(10),
@@ -44,10 +41,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         long checkoutId = createCheckoutAndGetId();
         OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 3);
 
-        patchJson("/checkouts/{checkoutId}/status", 
-            TestFixtures.updateCheckoutStatus("SUBMITTED"),
-            checkoutId)
-            .andExpect(status().isOk());
+        submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/status",
             TestFixtures.updateCheckoutStatus("DRAFT"),
