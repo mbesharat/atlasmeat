@@ -143,10 +143,22 @@ public abstract class IntegrationTestBase {
                 .andExpect(status().isOk());
     }
 
+    protected ResultActions patchStatus(long checkoutId, String status) throws Exception{
+        return patchJson("/checkouts/{checkoutId}/status", TestFixtures.updateCheckoutStatus(status), checkoutId);
+    }
+
     protected ResultActions submitCheckout(long checkoutId) throws Exception{
-        return patchJson("/checkouts/{checkoutId}/status", 
-                TestFixtures.updateCheckoutSubmitted(), checkoutId)
-                .andExpect(status().isOk());
+        return patchStatus(checkoutId, "SUBMITTED")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status")
+                .value("SUBMITTED"));
+    }
+
+    protected ResultActions markAsPaid(long checkoutId) throws Exception{
+        return patchStatus(checkoutId, "PAID")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status")
+                .value("PAID"));
     }
 
 }

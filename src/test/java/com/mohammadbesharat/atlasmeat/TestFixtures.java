@@ -127,6 +127,10 @@ public final class TestFixtures {
         """.formatted(status);
     }
 
+    public static String updateCheckoutDraft(){
+        return updateCheckoutStatus("DRAFT");
+    }
+
     public static String updateCheckoutSubmitted(){
         return updateCheckoutStatus("SUBMITTED");
     }
