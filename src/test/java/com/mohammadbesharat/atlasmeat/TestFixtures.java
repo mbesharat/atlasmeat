@@ -108,6 +108,16 @@ public final class TestFixtures {
         }
         """.formatted(cutId, quantity);
     }
+
+    public static String addBeefOrder2(long cutId, int quantity){
+        return
+        """
+        {
+            "animal" : "BEEF",
+            "items" : [{"cutId" : %d, "quantity" : %d}]
+        }
+        """.formatted(cutId, quantity);
+    }
     
     public static String patchItemQuantity(int quantity){
         return

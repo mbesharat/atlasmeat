@@ -8,11 +8,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CheckoutConflictIntegrationTest extends IntegrationTestBase {
 
     long ribeyeId;
+    long brisketId;
 
     @BeforeEach
     void seedCuts(){
         clearDB();
         ribeyeId = seedBeefCut("RIBEYE", "Ribeye");
+        brisketId = seedBeefCut("BRISKET", "Brisket");
     }
 
     //Happy cycle for status transitions
@@ -90,7 +92,6 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
 
         long checkoutId = createCheckoutAndGetId();
         OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 5);
-        
         submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}", 
@@ -103,7 +104,56 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
                 .value("Conflict"))
             .andExpect(jsonPath("$.message")
                 .value("Cannot edit items when checkout status is SUBMITTED"));
-
     }
-    
+
+    @Test
+    void return409AddingOrderWhenSubmittedOrPaid() throws Exception{
+
+        long checkoutId = createCheckoutAndGetId();
+        OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 5);
+        
+        submitCheckout(checkoutId);
+        patchJson("/checkouts/{checkoutId}/orders", 
+            TestFixtures.addBeefOrder2(brisketId, 5), checkoutId)
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error")
+                .value("Conflict"))
+            .andExpect(jsonPath("$.message")
+                .value("Cannot add items when checkout status is SUBMITTED"));
+
+        markAsPaid(checkoutId);
+        patchJson("/checkouts/{checkoutId}/orders", 
+            TestFixtures.addBeefOrder2(brisketId, 5), checkoutId)
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error")
+                .value("Conflict"))
+            .andExpect(jsonPath("$.message")
+                .value("Cannot add items when checkout status is PAID"));
+    }
+
+    @Test 
+    void return409RemovingOrderWhenSubmittedOrPaid() throws Exception{
+
+        long checkoutId = createCheckoutAndGetId();
+        OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 5);
+        
+        submitCheckout(checkoutId);
+        deleteJsonRaw("/checkouts/{checkoutId}/orders/{orderId}", 
+            checkoutId, ids.orderId())
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error")
+                .value("Conflict"))
+            .andExpect(jsonPath("$.message")
+                .value("Cannot remove orders when checkout status is SUBMITTED"));
+
+        markAsPaid(checkoutId);
+        deleteJsonRaw("/checkouts/{checkoutId}/orders/{orderId}", 
+            checkoutId, ids.orderId())
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error")
+                .value("Conflict"))
+            .andExpect(jsonPath("$.message")
+                .value("Cannot remove orders when checkout status is PAID"));
+    }
+
 }

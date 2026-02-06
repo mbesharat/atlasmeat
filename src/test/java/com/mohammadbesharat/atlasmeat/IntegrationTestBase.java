@@ -107,6 +107,10 @@ public abstract class IntegrationTestBase {
             .andExpect(status().isNoContent());
     }
 
+    protected ResultActions deleteJsonRaw(String uriTemplate, Object... urivars) throws Exception{
+        return mvc.perform(delete(uriTemplate, urivars));
+    }
+
 
 
 
