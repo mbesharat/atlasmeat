@@ -113,22 +113,22 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         OrderIds ids = addBeefOrderAndGetIds(checkoutId, ribeyeId, 5);
         
         submitCheckout(checkoutId);
-        patchJson("/checkouts/{checkoutId}/orders", 
+        postJson("/checkouts/{checkoutId}/orders",
             TestFixtures.addBeefOrder2(brisketId, 5), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
             .andExpect(jsonPath("$.message")
-                .value("Cannot add items when checkout status is SUBMITTED"));
+                .value("Cannot add orders when checkout status is SUBMITTED"));
 
         markAsPaid(checkoutId);
-        patchJson("/checkouts/{checkoutId}/orders", 
+        postJson("/checkouts/{checkoutId}/orders",
             TestFixtures.addBeefOrder2(brisketId, 5), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
             .andExpect(jsonPath("$.message")
-                .value("Cannot add items when checkout status is PAID"));
+                .value("Cannot add orders when checkout status is PAID"));
     }
 
     @Test 
