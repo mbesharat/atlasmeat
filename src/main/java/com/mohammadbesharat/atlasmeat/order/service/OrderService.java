@@ -2,11 +2,14 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
+import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,23 +21,6 @@ public class OrderService {
 
     public OrderService(OrderRepository orderRepository){
         this.orderRepository = orderRepository;
-    }
-
-    
-    public OrderResponse createOrder(CreateOrderRequest req){
-
-        Order saved = orderRepository.save(toEntity(req));
-        return toDto(saved);
-    }
-
-    private Order toEntity(CreateOrderRequest req){
-        Order order = new Order();
-        order.setCustomerEmail(req.customerEmail().trim().toLowerCase());
-        order.setCustomerName(req.customerName().trim());
-        order.setCustomerPhone(req.customerPhone().trim());
-        order.setOrderDetails(req.orderDetails());
-        return order;
-
     }
 
     public Order findOrderById(Long id){
@@ -50,14 +36,18 @@ public class OrderService {
     }
 
     private OrderResponse toDto(Order o){
+        List<OrderItemResponse> itemDtos = o.getItems().stream()
+            .map(item -> new OrderItemResponse(
+                    item.getId(),
+                    item.getCut().getId(),
+                    item.getCut().getDisplayName(),
+                    item.getQuantity()
+            ))
+            .toList();
         return new OrderResponse(
             o.getId(),
-            o.getCustomerName(),
-            o.getCustomerEmail(),
-            o.getCustomerPhone(),
-            o.getOrderDetails(),
-            o.getCreatedAt(),
-            o.getCancelledAt());
-        
+            o.getAnimalType(),
+            itemDtos
+        );
     }
 }

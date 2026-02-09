@@ -3,12 +3,9 @@ package com.mohammadbesharat.atlasmeat.order.api;
 import com.mohammadbesharat.atlasmeat.order.dto.*;
 import com.mohammadbesharat.atlasmeat.order.service.OrderService;
 
-import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Page;
@@ -30,11 +27,6 @@ public class OrderController {
     }
 
     //take the values from user
-    @PostMapping
-    public OrderResponse create(@Valid @RequestBody CreateOrderRequest req){
-
-        return orderService.createOrder(req);
-    }
     //display order by number to user
     @GetMapping("/{id}")
     public OrderResponse getOrderById(@PathVariable Long id) {

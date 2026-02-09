@@ -1,4 +1,14 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotInOrder;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderItemNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,13 +27,87 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptoinHandler {
 
+
+
     //404 error 
+
+    @ExceptionHandler(CheckoutNotFound.class)
+    public ResponseEntity<ApiError> handleCheckoutNotFound(
+        CheckoutNotFound exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ApiError> handleOrderNotfonud(
         OrderNotFoundException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
+
+    @ExceptionHandler(CutNotFound.class)
+    public ResponseEntity<ApiError> handleCutNotFound(
+        CutNotFound exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+     @ExceptionHandler(CutAnimalMismatch.class)
+    public ResponseEntity<ApiError> handleCutAnimalMismatch(
+        CutAnimalMismatch exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidDateRange.class)
+    public ResponseEntity<ApiError> handleInvalidDateRange(
+        InvalidDateRange exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidStatusTransition.class)
+    public ResponseEntity<ApiError> handleInvalidStatusTransition(
+        InvalidStatusTransition exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(CheckoutLockedException.class)
+    public ResponseEntity<ApiError> handleCheckoutLockedException(
+        CheckoutLockedException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(OrderNotInCheckout.class)
+    public ResponseEntity<ApiError> handleOrderNotInCheckout(
+        OrderNotInCheckout exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(CutNotInOrder.class)
+    public ResponseEntity<ApiError> handleCutNotInOrder(
+        CutNotInOrder exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(OrderItemNotFound.class)
+    public ResponseEntity<ApiError> handleOrderItemNotFound(
+        OrderItemNotFound exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidPatchRequest.class)
+    public ResponseEntity<ApiError> handleInvalidPatchRequest(
+        InvalidPatchRequest exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+    }
+
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(
@@ -52,9 +136,11 @@ public class GlobalExceptoinHandler {
     public ResponseEntity<ApiError> handleUnexpected(
         Exception exception,
         HttpServletRequest request
-    ){
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request, null);
-    }
+        ){
+            exception.printStackTrace(); // ✅ TEMP: show real error in console
+            return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request, null);
+        }
+
 
     private ValidationError toValidationError(FieldError fe){
         String message = fe.getDefaultMessage() != null ? fe.getDefaultMessage() : "Invalid value";
