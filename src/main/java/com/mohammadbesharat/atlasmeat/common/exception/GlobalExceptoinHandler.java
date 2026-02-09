@@ -70,7 +70,7 @@ public class GlobalExceptoinHandler {
     public ResponseEntity<ApiError> handleInvalidStatusTransition(
         InvalidStatusTransition exception,
         HttpServletRequest request){
-            return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
 
     @ExceptionHandler(CheckoutLockedException.class)
@@ -153,13 +153,16 @@ public class GlobalExceptoinHandler {
         HttpServletRequest request,
         List<ValidationError> validationErrors
     ){
+        List<ValidationError> safeErrors = 
+            (validationErrors == null) ? List.of() : validationErrors;
+
         ApiError body = new ApiError(
             Instant.now(),
             status.value(),
             status.getReasonPhrase(),
             message,
             request.getRequestURI(),
-            validationErrors
+            safeErrors
         );
         
         return ResponseEntity.status(status).body(body);

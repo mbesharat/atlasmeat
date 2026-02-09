@@ -185,6 +185,11 @@ public class CheckoutService {
         return toCheckoutResponse(saved);
     }
 
+
+
+
+
+
     @Transactional
     public void removeOrderFromCheckout(Long checkoutId, Long orderId){
         
@@ -196,6 +201,13 @@ public class CheckoutService {
         Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout " + checkoutId));
         checkout.removeOrder(order);
     }
+
+
+
+
+
+
+
 
     @Transactional
     public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
@@ -246,6 +258,11 @@ public class CheckoutService {
 
     }
 
+
+
+
+
+
     @Transactional 
     public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long orderItemId, UpdateItemRequest request){
 
@@ -267,18 +284,26 @@ public class CheckoutService {
 
     }
 
+
+
+
+
+
     @Transactional
     public void removeItemFromOrder(Long checkoutId, Long orderId, Long orderItemId){
 
-            Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
 
-            if(checkout.getStatus() != CheckoutStatus.DRAFT){
-                throw new CheckoutLockedException("remove items", checkout.getStatus());
-            }
+        if(checkout.getStatus() != CheckoutStatus.DRAFT){
+            throw new CheckoutLockedException("remove items", checkout.getStatus());
+        }
 
-            OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound("Order item with id " + orderItemId + " not found in order with id " + orderId + " in checkout with id " + checkoutId));
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound("Order item with id " + orderItemId + " not found in order with id " + orderId + " in checkout with id " + checkoutId));
 
-            orderItemRepository.delete(item);
+        orderItemRepository.delete(item);
+
+
+
 
     }
 
@@ -325,6 +350,8 @@ public class CheckoutService {
 
         return page.map(this::toCheckoutResponse);
     }
+
+    
 
     @Transactional
     public CheckoutResponse updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){

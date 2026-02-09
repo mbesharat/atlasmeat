@@ -33,7 +33,7 @@ public class Cut {
 
 
 
-    public void setCattle(AnimalType animal){
+    public void setAnimal(AnimalType animal){
         this.animal = animal;
     }
     public void setCode(String code){
