@@ -15,7 +15,7 @@ public class WorkflowService {
         this.checkoutService = checkoutService;
     }
 
-    public CheckoutResponse tartCheckoutWorkflow(CreateCheckoutRequest request){
+    public CheckoutResponse startCheckoutWorkflow(CreateCheckoutRequest request){
         return checkoutService.createCheckout(request);
     }
 

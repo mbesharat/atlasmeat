@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.checkout.api;
 
 import java.time.LocalDate;
 
+import com.mohammadbesharat.atlasmeat.workflow.service.WorkflowService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -36,15 +37,20 @@ import jakarta.validation.Valid;
 public class CheckoutController {
     
     private final CheckoutService checkoutService;
+    private final WorkflowService workflowService;
 
-    public CheckoutController(CheckoutService checkoutService){
+    public CheckoutController(
+            CheckoutService checkoutService,
+            WorkflowService workflowService
+    ){
         this.checkoutService = checkoutService;
+        this.workflowService = workflowService;
     }
 
     //create a checkout
     @PostMapping
     public ResponseEntity<CheckoutResponse> createCheckout(@Valid @RequestBody CreateCheckoutRequest req){
-        CheckoutResponse created = checkoutService.createCheckout(req);
+        CheckoutResponse created = workflowService.startCheckoutWorkflow(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

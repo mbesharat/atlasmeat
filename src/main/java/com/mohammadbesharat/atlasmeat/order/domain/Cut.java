@@ -18,6 +18,15 @@ public class Cut {
     private String displayName;
 
 
+    public Cut(){};
+
+    public Cut(AnimalType animal, String code, String displayName){
+        setAnimal(animal);
+        setCode(code);
+        setDisplayName(displayName);
+    }
+
+
     public Long getId(){
         return id;
     }
