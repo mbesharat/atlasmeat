@@ -1,4 +1,5 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
@@ -11,6 +12,8 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderItemNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.HttpStatus;
@@ -21,13 +24,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 
 @RestControllerAdvice
-public class GlobalExceptoinHandler {
+public class GlobalExceptionHandler {
 
-
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     //404 error 
 
@@ -39,7 +43,7 @@ public class GlobalExceptoinHandler {
     }
 
     @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<ApiError> handleOrderNotfonud(
+    public ResponseEntity<ApiError> handleOrderNotfound(
         OrderNotFoundException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
@@ -128,7 +132,13 @@ public class GlobalExceptoinHandler {
         HttpMessageNotReadableException exception,
         HttpServletRequest request
     ){
-        return buildResponse(HttpStatus.BAD_REQUEST, "Malformed JSON request", request, null);
+        if(exception.getCause() instanceof InvalidFormatException ife){
+            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid enum type. Valid values include: " +
+                    Arrays.toString(ife.getTargetType().getEnumConstants()), request, null);
+        }
+        else{
+            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid JSON value", request, null);
+        }
     }
     
     //500 error
@@ -137,9 +147,9 @@ public class GlobalExceptoinHandler {
         Exception exception,
         HttpServletRequest request
         ){
-            exception.printStackTrace(); // ✅ TEMP: show real error in console
+            log.error("Unexpected error", exception);
             return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request, null);
-        }
+    }
 
 
     private ValidationError toValidationError(FieldError fe){
