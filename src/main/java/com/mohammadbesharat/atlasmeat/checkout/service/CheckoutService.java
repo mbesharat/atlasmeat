@@ -113,7 +113,7 @@ public class CheckoutService {
 
     public CheckoutResponse getCheckout(Long checkoutId){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
         return toCheckoutResponse(checkout);
     }
 
@@ -151,7 +151,7 @@ public class CheckoutService {
     @Transactional
     public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderReq){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
         
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("add orders",  checkout.getStatus());
@@ -168,10 +168,10 @@ public class CheckoutService {
             Long cutId = entry.getKey();
             Integer quantity = entry.getValue();
 
-            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound("Cut not found with id " + cutId));
+            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
 
             if (cut.getAnimalType() != order.getAnimalType()){
-                throw new CutAnimalMismatch("Cut " + cutId + " (" + cut.getDisplayName() + ") is not valid for " + order.getAnimalType());
+                throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + order.getAnimalType());
             }
 
             OrderItem item = new OrderItem();
@@ -193,12 +193,12 @@ public class CheckoutService {
     @Transactional
     public void removeOrderFromCheckout(Long checkoutId, Long orderId){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("remove orders", checkout.getStatus());
         }
 
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout " + checkoutId));
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout(orderId, checkoutId));
         checkout.removeOrder(order);
     }
 
@@ -212,12 +212,12 @@ public class CheckoutService {
     @Transactional
     public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("edit orders", checkout.getStatus());
         }
 
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout " + checkoutId));
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout(orderId, checkoutId));
 
         if (request.animal() == null && request.items() == null){
             throw new InvalidPatchRequest("At least one animal or item must be provided");
@@ -226,7 +226,7 @@ public class CheckoutService {
             throw new InvalidPatchRequest("Items must contain at least one item");
         }
         if(request.animal() != null && request.items() == null){
-            throw new InvalidPatchRequest("Changing animal requires updating itmes");
+            throw new InvalidPatchRequest("Changing animal requires updating items");
         }
         
         AnimalType finalAnimal = (request.animal() != null ? request.animal() : order.getAnimalType());
@@ -241,9 +241,9 @@ public class CheckoutService {
                 Long cutId = entry.getKey();
                 Integer quantity = entry.getValue();
 
-                Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound("Cut not found with id " + cutId));
+                Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
                 if(cut.getAnimalType() != finalAnimal){
-                    throw new CutAnimalMismatch("Cut with id " + cutId + " (" + cut.getDisplayName() + ") does not belong to " + finalAnimal);
+                    throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + finalAnimal);
                 }
 
                 OrderItem item = new OrderItem();
@@ -266,17 +266,17 @@ public class CheckoutService {
     @Transactional 
     public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long orderItemId, UpdateItemRequest request){
 
-        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
 
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("edit items", checkout.getStatus());
         }
-        orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout("Order not found with id " + orderId + " in checkout with id " + checkoutId));
+        orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout(orderId, checkoutId));
         if(request.quantity() == null || request.quantity() < 1){
             throw new InvalidPatchRequest("Quantity must be 1 or greater");
         }
 
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound("Item not found with Id " + orderItemId + " in order with ID " + orderId + " in checkout with ID " + checkoutId));
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderId, checkoutId));
 
         item.setQuantity(request.quantity());
         orderItemRepository.save(item);
@@ -292,7 +292,7 @@ public class CheckoutService {
     @Transactional
     public void removeItemFromOrder(Long checkoutId, Long orderId, Long orderItemId){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
 
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("remove items", checkout.getStatus());
@@ -319,7 +319,7 @@ public class CheckoutService {
         Pageable pageable
     ){
         if (from != null && to != null && from.isAfter(to)){
-            throw new InvalidDateRange("From must be on or before to");
+            throw new InvalidDateRange();
         }
         LocalDateTime start = null;
         LocalDateTime endExclusive = null;
@@ -356,10 +356,10 @@ public class CheckoutService {
     @Transactional
     public CheckoutResponse updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound("Checkout not found with id " + checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
         CheckoutStatus currentStatus = checkout.getStatus();
         if(!isAllowedTransition(currentStatus, newStatus)){
-            throw new InvalidStatusTransition(currentStatus + " cannot be changed to " + newStatus);
+            throw new InvalidStatusTransition(currentStatus, newStatus);
         }
 
         checkout.setStatus(newStatus);
