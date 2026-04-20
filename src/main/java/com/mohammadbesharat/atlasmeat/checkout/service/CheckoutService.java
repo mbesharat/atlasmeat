@@ -276,7 +276,7 @@ public class CheckoutService {
             throw new InvalidPatchRequest("Quantity must be 1 or greater");
         }
 
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderId, checkoutId));
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderItemId, orderId, checkoutId));
 
         item.setQuantity(request.quantity());
         orderItemRepository.save(item);
@@ -298,7 +298,7 @@ public class CheckoutService {
             throw new CheckoutLockedException("remove items", checkout.getStatus());
         }
 
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound("Order item with id " + orderItemId + " not found in order with id " + orderId + " in checkout with id " + checkoutId));
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderItemId, orderId, checkoutId));
 
         orderItemRepository.delete(item);
 
