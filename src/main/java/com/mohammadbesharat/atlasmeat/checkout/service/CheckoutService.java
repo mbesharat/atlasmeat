@@ -44,10 +44,10 @@ import jakarta.transaction.Transactional;
 public class CheckoutService {
  
     
-    public final CheckoutRepository checkoutRepository;
-    public final OrderRepository orderRepository;
-    public final CutRepository cutRepository;
-    public final OrderItemRepository orderItemRepository;
+    private final CheckoutRepository checkoutRepository;
+    private final OrderRepository orderRepository;
+    private final CutRepository cutRepository;
+    private final OrderItemRepository orderItemRepository;
 
     public CheckoutService(CheckoutRepository checkoutRepository, CutRepository cutRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository){
         this.checkoutRepository = checkoutRepository;

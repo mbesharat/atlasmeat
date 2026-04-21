@@ -17,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 @Service
 public class OrderService {
     
-    public final OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderService(OrderRepository orderRepository){
         this.orderRepository = orderRepository;
