@@ -49,7 +49,11 @@ public class CheckoutService {
     private final CutRepository cutRepository;
     private final OrderItemRepository orderItemRepository;
 
-    public CheckoutService(CheckoutRepository checkoutRepository, CutRepository cutRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository){
+    public CheckoutService(
+            CheckoutRepository checkoutRepository,
+            CutRepository cutRepository,
+            OrderRepository orderRepository,
+            OrderItemRepository orderItemRepository){
         this.checkoutRepository = checkoutRepository;
         this.cutRepository = cutRepository;
         this.orderRepository = orderRepository;
@@ -87,13 +91,15 @@ public class CheckoutService {
 
     private CheckoutResponse toCheckoutResponse(Checkout checkout){
 
-        List<OrderResponse> orderDtos = checkout.getOrders().stream().map(order -> {List<OrderItemResponse> itemDtos = order.getItems().stream().map(this::toItemDto).toList();
+        List<OrderResponse> orderDtos = checkout.getOrders().stream().map(order -> {
+            List<OrderItemResponse> itemDtos = order.getItems().stream()
+                    .sorted(Comparator.comparing(OrderItem::getId)).map(this::toItemDto).toList();
             return new OrderResponse(
                 order.getId(),
                 order.getAnimalType(),
                 itemDtos
             );
-         })
+        })
         .toList();
 
         return new CheckoutResponse(
@@ -113,7 +119,8 @@ public class CheckoutService {
 
     public CheckoutResponse getCheckout(Long checkoutId){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(()
+                -> new CheckoutNotFound(checkoutId));
         return toCheckoutResponse(checkout);
     }
 
@@ -151,7 +158,8 @@ public class CheckoutService {
     @Transactional
     public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderReq){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
+                new CheckoutNotFound(checkoutId));
         
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("add orders",  checkout.getStatus());
@@ -193,12 +201,14 @@ public class CheckoutService {
     @Transactional
     public void removeOrderFromCheckout(Long checkoutId, Long orderId){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
+                new CheckoutNotFound(checkoutId));
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("remove orders", checkout.getStatus());
         }
 
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout(orderId, checkoutId));
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
+                new OrderNotInCheckout(orderId, checkoutId));
         checkout.removeOrder(order);
     }
 
@@ -212,12 +222,14 @@ public class CheckoutService {
     @Transactional
     public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
+                new CheckoutNotFound(checkoutId));
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("edit orders", checkout.getStatus());
         }
 
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout(orderId, checkoutId));
+        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
+                new OrderNotInCheckout(orderId, checkoutId));
 
         if (request.animal() == null && request.items() == null){
             throw new InvalidPatchRequest("At least one animal or item must be provided");
@@ -266,17 +278,21 @@ public class CheckoutService {
     @Transactional 
     public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long orderItemId, UpdateItemRequest request){
 
-        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(() ->
+                new CheckoutNotFound(checkoutId));
 
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
             throw new CheckoutLockedException("edit items", checkout.getStatus());
         }
-        orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() -> new OrderNotInCheckout(orderId, checkoutId));
+        orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
+                new OrderNotInCheckout(orderId, checkoutId));
         if(request.quantity() == null || request.quantity() < 1){
             throw new InvalidPatchRequest("Quantity must be 1 or greater");
         }
 
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderItemId, orderId, checkoutId));
+        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(
+                orderItemId, orderId, checkoutId).orElseThrow(() ->
+                new OrderItemNotFound(orderItemId, orderId, checkoutId));
 
         item.setQuantity(request.quantity());
         orderItemRepository.save(item);
