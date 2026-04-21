@@ -1,8 +1,8 @@
 package com.mohammadbesharat.atlasmeat.order.domain;
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
