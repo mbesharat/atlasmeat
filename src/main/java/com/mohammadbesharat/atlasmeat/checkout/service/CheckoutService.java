@@ -119,7 +119,7 @@ public class CheckoutService {
 
     public CheckoutResponse getCheckout(Long checkoutId){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(()
+        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(()
                 -> new CheckoutNotFound(checkoutId));
         return toCheckoutResponse(checkout);
     }
