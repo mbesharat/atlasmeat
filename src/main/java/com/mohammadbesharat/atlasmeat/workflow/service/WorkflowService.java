@@ -2,6 +2,7 @@ package com.mohammadbesharat.atlasmeat.workflow.service;
 
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
+import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
@@ -14,9 +15,12 @@ import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.service.OrderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 
 import java.util.*;
@@ -127,6 +131,28 @@ public class WorkflowService {
     public CheckoutResponse updateCheckoutStatus(Long checkoutId, UpdateCheckoutStatusRequest request){
 
         return toCheckoutResponse(checkoutService.updateCheckoutStatus(checkoutId, request.status()));
+    }
+
+    public Page<CheckoutResponse> searchCheckouts(
+            Long checkoutId,
+            CheckoutStatus status,
+            String customerName,
+            String customerPhone,
+            String customerEmail,
+            LocalDate from,
+            LocalDate to,
+            Pageable pageable
+    ){
+        Page<Checkout> page = checkoutService.searchCheckouts(
+                checkoutId,
+                status,
+                customerName,
+                customerPhone,
+                customerEmail,
+                from,
+                to,
+                pageable);
+        return page.map(this::toCheckoutResponse);
     }
 
 

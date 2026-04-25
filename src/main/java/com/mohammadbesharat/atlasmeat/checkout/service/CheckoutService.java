@@ -135,7 +135,7 @@ public class CheckoutService {
 
 
 
-    public Page<CheckoutResponse> searchCheckouts(
+    public Page<Checkout> searchCheckouts(
         Long checkoutId,
         CheckoutStatus status,
         String customerName,
@@ -173,9 +173,7 @@ public class CheckoutService {
             spec = spec.and(CheckoutSpecifications.customerPhoneContains(customerPhone));
         }
 
-        Page<Checkout> page = checkoutRepository.findAll(spec, pageable);
-
-        return page.map(this::toCheckoutResponse);
+        return checkoutRepository.findAll(spec, pageable);
     }
 
     
