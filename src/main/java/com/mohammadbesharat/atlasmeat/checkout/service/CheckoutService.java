@@ -48,19 +48,17 @@ public class CheckoutService {
     }
 
     @Transactional
-    public CheckoutResponse createCheckout(CreateCheckoutRequest req){
+    public Checkout createCheckout(CreateCheckoutRequest req){
         Checkout checkout = new Checkout();
         checkout.setCustomerName(req.customerName());
         checkout.setCustomerPhone(req.customerPhone());
         checkout.setCustomerEmail(req.customerEmail());
         checkout.setStatus(CheckoutStatus.DRAFT);
 
-        checkoutRepository.save(checkout);
-        return toCheckoutResponse(checkout);
+        return checkoutRepository.save(checkout);
     }
 
     public Checkout saveCheckout(Checkout checkout){
-
         return checkoutRepository.save(checkout);
     }
 

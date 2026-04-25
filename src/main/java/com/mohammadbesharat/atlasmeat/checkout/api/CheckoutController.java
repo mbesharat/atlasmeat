@@ -50,7 +50,7 @@ public class CheckoutController {
     //create a checkout
     @PostMapping
     public ResponseEntity<CheckoutResponse> createCheckout(@Valid @RequestBody CreateCheckoutRequest req){
-        CheckoutResponse created = checkoutService.createCheckout(req);
+        CheckoutResponse created = workflowService.createCheckout(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

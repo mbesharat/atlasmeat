@@ -4,6 +4,7 @@ package com.mohammadbesharat.atlasmeat.workflow.service;
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
+import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
@@ -60,6 +61,10 @@ public class WorkflowService {
                 checkout.getCreatedAt(),
                 orderDtos
         );
+    }
+
+    public CheckoutResponse createCheckout(CreateCheckoutRequest request){
+        return toCheckoutResponse(checkoutService.createCheckout(request));
     }
 
     public CheckoutResponse getCheckout(Long checkoutId){
