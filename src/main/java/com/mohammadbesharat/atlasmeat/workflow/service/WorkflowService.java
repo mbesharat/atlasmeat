@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.workflow.service;
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
@@ -122,5 +123,12 @@ public class WorkflowService {
         OrderItem item =  orderService.findByIdAndOrderIdAndCheckoutId(orderItemId, orderId, checkoutId);
         orderService.removeItemFromOrder(item);
     }
+
+    public CheckoutResponse updateCheckoutStatus(Long checkoutId, UpdateCheckoutStatusRequest request){
+
+        return toCheckoutResponse(checkoutService.updateCheckoutStatus(checkoutId, request.status()));
+    }
+
+
 }
 

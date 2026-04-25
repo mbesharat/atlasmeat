@@ -181,18 +181,16 @@ public class CheckoutService {
     
 
     @Transactional
-    public CheckoutResponse updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
+    public Checkout updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = getCheckoutById(checkoutId);
         CheckoutStatus currentStatus = checkout.getStatus();
         if(!isAllowedTransition(currentStatus, newStatus)){
             throw new InvalidStatusTransition(currentStatus, newStatus);
         }
 
         checkout.setStatus(newStatus);
-        Checkout saved = checkoutRepository.save(checkout);
-        return toCheckoutResponse(saved);
-
+        return checkoutRepository.save(checkout);
     }
 
     private boolean isAllowedTransition(CheckoutStatus current, CheckoutStatus next){
