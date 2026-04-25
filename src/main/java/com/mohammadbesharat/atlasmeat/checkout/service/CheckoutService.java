@@ -99,11 +99,7 @@ public class CheckoutService {
 
 
 
-    public Page<CheckoutResponse> getAllCheckouts(Pageable pageable) {
-        
-        Page<Checkout> checkouts = checkoutRepository.findAll(pageable);
-        return checkouts.map(this::toCheckoutResponse);
-    }
+
 
     @Transactional
     public void removeOrderFromCheckout(Checkout checkout, Order order){
