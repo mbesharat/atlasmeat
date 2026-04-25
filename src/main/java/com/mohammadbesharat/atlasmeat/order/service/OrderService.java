@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
+import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
@@ -10,7 +11,9 @@ import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,5 +59,16 @@ public class OrderService {
                 item.getCut().getDisplayName(),
                 item.getQuantity()
         );
+    }
+
+    public Map<Long, Integer> mergeCutQuantities(List<CreateOrderItemRequest> items){
+        Map<Long, Integer> result = new LinkedHashMap<>();
+
+        for(CreateOrderItemRequest item : items){
+            Long cutId = item.cutId();
+            Integer qty = item.quantity();
+            result.merge(cutId, qty, Integer::sum);
+        }
+        return result;
     }
 }

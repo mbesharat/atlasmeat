@@ -92,16 +92,7 @@ public class CheckoutService {
 
 
 
-    private Map<Long, Integer> mergeCutQuantities(List<CreateOrderItemRequest> items){
-        Map<Long, Integer> result = new LinkedHashMap<>();
 
-        for(CreateOrderItemRequest item : items){
-            Long cutId = item.cutId();
-            Integer qty = item.quantity();
-            result.merge(cutId, qty, Integer::sum);
-        }
-        return result;
-    }
 
 
 
