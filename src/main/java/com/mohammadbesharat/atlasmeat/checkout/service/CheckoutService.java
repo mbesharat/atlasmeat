@@ -128,48 +128,7 @@ public class CheckoutService {
 
 
 
-    @Transactional
-    public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
 
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("edit orders", checkout.getStatus());
-        }
-
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
-                new OrderNotInCheckout(orderId, checkoutId));
-
-
-        
-        AnimalType finalAnimal = (request.animal() != null ? request.animal() : order.getAnimalType());
-        order.setAnimal(finalAnimal);
-
-
-        if(request.items() != null){
-            Map<Long, Integer> cutQty = mergeCutQuantities(request.items());
-            order.getItems().clear(); 
-
-            for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
-                Long cutId = entry.getKey();
-                Integer quantity = entry.getValue();
-
-                Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
-                if(cut.getAnimalType() != finalAnimal){
-                    throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + finalAnimal);
-                }
-
-                OrderItem item = new OrderItem();
-                item.setCut(cut);
-                item.setQuantity(quantity);
-                order.addItem(item);
-            }
-        }
-
-        Checkout saved = checkoutRepository.save(checkout);
-        return toCheckoutResponse(saved);
-
-    }
 
 
 
