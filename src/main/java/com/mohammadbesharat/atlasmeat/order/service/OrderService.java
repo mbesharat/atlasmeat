@@ -1,8 +1,10 @@
 package com.mohammadbesharat.atlasmeat.order.service;
 
 
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.common.exception.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.common.exception.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
@@ -102,8 +104,26 @@ public class OrderService {
         }
     }
 
+    public void replaceOrderItems(Order order, Map<Long, Integer> cutQty){
+        order.getItems().clear();
+        addItemsToOrder(order, cutQty);
+    }
+
     public Order findByIdAndCheckoutId(Long orderId, Long checkoutId){
         return orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(()
                 -> new OrderNotInCheckout(orderId, checkoutId));
+    }
+
+    public void validatePatchRequest(UpdateOrderRequest request){
+        if (request.animal() == null && request.items() == null){
+            throw new InvalidPatchRequest("At least one animal or item must be provided");
+        }
+        if(request.items() != null && request.items().isEmpty()){
+            throw new InvalidPatchRequest("Items must contain at least one item");
+        }
+        if(request.animal() != null && request.items() == null){
+            throw new InvalidPatchRequest("Changing animal requires updating items");
+        }
+
     }
 }

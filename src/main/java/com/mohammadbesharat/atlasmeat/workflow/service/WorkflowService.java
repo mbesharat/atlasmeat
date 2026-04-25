@@ -4,7 +4,9 @@ package com.mohammadbesharat.atlasmeat.workflow.service;
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
+import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
@@ -82,6 +84,25 @@ public class WorkflowService {
 
         Order order = orderService.findByIdAndCheckoutId(orderId, checkoutId);
         checkoutService.removeOrderFromCheckout(checkout, order);
+    }
+
+    @Transactional
+    public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
+        Checkout checkout = checkoutService.getCheckoutById(checkoutId);
+        checkoutService.assertUnlocked(checkout, "patch orders");
+
+        Order order = orderService.findByIdAndCheckoutId(orderId, checkoutId);
+        orderService.validatePatchRequest(request);
+
+        AnimalType finalAnimal = (request.animal() != null ? request.animal() : order.getAnimalType());
+        order.setAnimal(finalAnimal);
+
+        if(request.items() != null) {
+
+            Map<Long, Integer> cutQty = orderService.mergeCutQuantities(request.items());
+            orderService.replaceOrderItems(order, cutQty);
+        }
+        return toCheckoutResponse(checkoutService.saveCheckout(checkout));
     }
 }
 
