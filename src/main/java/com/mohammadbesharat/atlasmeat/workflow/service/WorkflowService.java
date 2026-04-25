@@ -62,6 +62,11 @@ public class WorkflowService {
         );
     }
 
+    public CheckoutResponse getCheckout(Long checkoutId){
+
+        return toCheckoutResponse(checkoutService.getCheckout(checkoutId));
+    }
+
     @Transactional
     public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderRequest){
 
@@ -128,9 +133,9 @@ public class WorkflowService {
         orderService.removeItemFromOrder(item);
     }
 
-    public CheckoutResponse updateCheckoutStatus(Long checkoutId, UpdateCheckoutStatusRequest request){
+    public CheckoutResponse updateCheckoutStatus(Long checkoutId, CheckoutStatus status){
 
-        return toCheckoutResponse(checkoutService.updateCheckoutStatus(checkoutId, request.status()));
+        return toCheckoutResponse(checkoutService.updateCheckoutStatus(checkoutId, status));
     }
 
     public Page<CheckoutResponse> searchCheckouts(

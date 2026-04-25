@@ -72,10 +72,9 @@ public class CheckoutService {
 
 
 
-    public CheckoutResponse getCheckout(Long checkoutId){
-        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(()
+    public Checkout getCheckout(Long checkoutId){
+        return checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(()
                 -> new CheckoutNotFound(checkoutId));
-        return toCheckoutResponse(checkout);
     }
 
     public Checkout getCheckoutById(Long checkoutId){

@@ -50,14 +50,14 @@ public class CheckoutController {
     //create a checkout
     @PostMapping
     public ResponseEntity<CheckoutResponse> createCheckout(@Valid @RequestBody CreateCheckoutRequest req){
-        CheckoutResponse created = workflowService.startCheckoutWorkflow(req);
+        CheckoutResponse created = checkoutService.createCheckout(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     //get a checkout using id
     @GetMapping("/{checkoutId}")
     public ResponseEntity<CheckoutResponse> getCheckout(@PathVariable Long checkoutId){
-        CheckoutResponse response = checkoutService.getCheckout(checkoutId);
+        CheckoutResponse response = workflowService.getCheckout(checkoutId);
         return ResponseEntity.ok(response);
     }
 
@@ -74,14 +74,14 @@ public class CheckoutController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable)
     {
-        return checkoutService.searchCheckouts(checkoutId, status, customerName, customerPhone, customerEmail, from, to, pageable);
+        return workflowService.searchCheckouts(checkoutId, status, customerName, customerPhone, customerEmail, from, to, pageable);
     }
 
 
     //add an order to a checkout
     @PostMapping("/{checkoutId}/orders")
     public ResponseEntity<CheckoutResponse> addOrderToCheckout(@PathVariable Long checkoutId, @Valid @RequestBody CreateOrderRequest request){
-        CheckoutResponse updated = checkoutService.addOrderToCheckout(checkoutId, request);
+        CheckoutResponse updated = workflowService.addOrderToCheckout(checkoutId, request);
         return ResponseEntity.ok(updated);
 
     }
@@ -89,7 +89,7 @@ public class CheckoutController {
     //Remove order from a checkout
     @DeleteMapping("/{checkoutId}/orders/{orderId}")
     public ResponseEntity<Void> removeOrder(@PathVariable Long checkoutId, @PathVariable Long orderId){
-        checkoutService.removeOrderFromCheckout(checkoutId, orderId);
+        workflowService.removeOrderFromCheckout(checkoutId, orderId);
         return ResponseEntity.noContent().build();
 
     }
@@ -97,27 +97,27 @@ public class CheckoutController {
     @PatchMapping("/{checkoutId}/orders/{orderId}")
     public ResponseEntity<CheckoutResponse> patchOrder(@PathVariable Long checkoutId, @PathVariable Long orderId, @Valid @RequestBody UpdateOrderRequest request){
         
-        CheckoutResponse updated = checkoutService.patchOrder(checkoutId, orderId, request);
+        CheckoutResponse updated = workflowService.patchOrder(checkoutId, orderId, request);
         return ResponseEntity.ok(updated);
     }
 
     //patch single item in order
     @PatchMapping ("/{checkoutId}/orders/{orderId}/items/{orderItemId}")
     public ResponseEntity<CheckoutResponse> updateItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long orderItemId, @Valid @RequestBody UpdateItemRequest request){
-        CheckoutResponse updated = checkoutService.patchItem(checkoutId, orderId, orderItemId, request);
+        CheckoutResponse updated = workflowService.patchItem(checkoutId, orderId, orderItemId, request);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping ("/{checkoutId}/orders/{orderId}/items/{orderItemId}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long checkoutId, @PathVariable Long orderId, @PathVariable Long orderItemId){
-        checkoutService.removeItemFromOrder(checkoutId, orderId, orderItemId);
+        workflowService.removeItemFromOrder(checkoutId, orderId, orderItemId);
         return ResponseEntity.noContent().build();
     }
 
     //update checkout status
     @PatchMapping ("/{checkoutId}/status")
     public ResponseEntity<CheckoutResponse> updateStatus(@PathVariable Long checkoutId, @Valid @RequestBody  UpdateCheckoutStatusRequest request){
-        CheckoutResponse updated = checkoutService.updateCheckoutStatus(checkoutId, request.status());
+        CheckoutResponse updated = workflowService.updateCheckoutStatus(checkoutId, request.status());
         return ResponseEntity.ok(updated);
     }
 
