@@ -1,12 +1,16 @@
 package com.mohammadbesharat.atlasmeat.order.service;
 
 
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
+import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +27,11 @@ import org.springframework.data.domain.Pageable;
 public class OrderService {
     
     private final OrderRepository orderRepository;
+    private final CutRepository cutRepository;
 
-    public OrderService(OrderRepository orderRepository){
+    public OrderService(OrderRepository orderRepository, CutRepository cutRepository){
         this.orderRepository = orderRepository;
+        this.cutRepository = cutRepository;
     }
 
     public Order findOrderById(Long id){
@@ -38,6 +44,10 @@ public class OrderService {
 
     public Page<OrderResponse> getOrders(Pageable pageable){
         return orderRepository.findAll(pageable).map(this::toDto);
+    }
+
+    public Cut findCutById(Long cutId){
+        return cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
     }
 
     private OrderResponse toDto(Order order){
@@ -70,5 +80,24 @@ public class OrderService {
             result.merge(cutId, qty, Integer::sum);
         }
         return result;
+    }
+
+    public void addItemsToOrder(Order order, Map<Long, Integer> cutQty){
+        for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
+            Long cutId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
+
+            if (cut.getAnimalType() != order.getAnimalType()){
+                throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + order.getAnimalType());
+            }
+
+            OrderItem item = new OrderItem();
+            item.setCut(cut);
+            item.setQuantity(quantity);
+
+            order.addItem(item);
+        }
     }
 }

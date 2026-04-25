@@ -5,12 +5,15 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
+import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
+import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.service.OrderService;
 import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 
@@ -53,4 +56,22 @@ public class WorkflowService {
                 orderDtos
         );
     }
+
+    @Transactional
+    public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderRequest){
+
+        Checkout checkout = checkoutService.getCheckoutById(checkoutId);
+        checkoutService.assertUnlocked(checkout, "add orders");
+
+        Order order = new Order();
+        order.setAnimal(orderRequest.animal());
+
+        checkout.addOrder(order);
+
+        Map<Long, Integer> cutQty = orderService.mergeCutQuantities(orderRequest.items());
+
+        orderService.addItemsToOrder(order, cutQty);
+        return toCheckoutResponse(checkoutService.saveCheckout(checkout));
+    }
+}
 

@@ -72,6 +72,11 @@ public class CheckoutService {
         return toCheckoutResponse(checkout);
     }
 
+    public Checkout saveCheckout(Checkout checkout){
+
+        return checkoutRepository.save(checkout);
+    }
+
 
 
 
@@ -87,8 +92,18 @@ public class CheckoutService {
         return toCheckoutResponse(checkout);
     }
 
+    public Checkout getCheckoutById(Long checkoutId){
+
+        return checkoutRepository.findById(checkoutId).orElseThrow(() ->
+                new CheckoutNotFound(checkoutId));
+    }
 
 
+    public void assertUnlocked(Checkout checkout, String action){
+        if(checkout.getStatus() != CheckoutStatus.DRAFT){
+            throw new CheckoutLockedException(action,  checkout.getStatus());
+        }
+    }
 
 
 
@@ -104,53 +119,6 @@ public class CheckoutService {
         Page<Checkout> checkouts = checkoutRepository.findAll(pageable);
         return checkouts.map(this::toCheckoutResponse);
     }
-
-
-
-
-
-    @Transactional
-    public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderReq){
-
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
-        
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("add orders",  checkout.getStatus());
-        }
-
-        Order order = new Order(); 
-        order.setAnimal(orderReq.animal());
-
-        checkout.addOrder(order);
-
-        Map<Long, Integer> cutQty = mergeCutQuantities(orderReq.items());
-
-        for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
-            Long cutId = entry.getKey();
-            Integer quantity = entry.getValue();
-
-            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
-
-            if (cut.getAnimalType() != order.getAnimalType()){
-                throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + order.getAnimalType());
-            }
-
-            OrderItem item = new OrderItem();
-            item.setCut(cut);
-            item.setQuantity(quantity);
-
-            order.addItem(item);
-        }
-        
-        Checkout saved = checkoutRepository.save(checkout);
-        return toCheckoutResponse(saved);
-    }
-
-
-
-
-
 
     @Transactional
     public void removeOrderFromCheckout(Long checkoutId, Long orderId){
