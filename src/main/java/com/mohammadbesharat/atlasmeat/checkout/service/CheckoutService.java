@@ -2,7 +2,6 @@ package com.mohammadbesharat.atlasmeat.checkout.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,29 +12,17 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
-import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
-import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderItemNotFound;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
+import com.mohammadbesharat.atlasmeat.order.exceptions.OrderItemNotFound;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
-import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
-import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
-import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
-import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 import jakarta.transaction.Transactional;
@@ -61,27 +48,18 @@ public class CheckoutService {
     }
 
     @Transactional
-    public CheckoutResponse createCheckout(CreateCheckoutRequest req){
+    public Checkout createCheckout(CreateCheckoutRequest req){
         Checkout checkout = new Checkout();
         checkout.setCustomerName(req.customerName());
         checkout.setCustomerPhone(req.customerPhone());
         checkout.setCustomerEmail(req.customerEmail());
         checkout.setStatus(CheckoutStatus.DRAFT);
 
-        checkoutRepository.save(checkout);
-        return toCheckoutResponse(checkout);
+        return checkoutRepository.save(checkout);
     }
 
-
-
-
-    public OrderItemResponse toItemDto(OrderItem item){
-        return new OrderItemResponse(
-            item.getId(),
-            item.getCut().getId(),
-            item.getCut().getDisplayName(),
-            item.getQuantity()
-        );
+    public Checkout saveCheckout(Checkout checkout){
+        return checkoutRepository.save(checkout);
     }
 
 
@@ -89,109 +67,31 @@ public class CheckoutService {
 
 
 
-    private CheckoutResponse toCheckoutResponse(Checkout checkout){
-
-        List<OrderResponse> orderDtos = checkout.getOrders().stream().map(order -> {
-            List<OrderItemResponse> itemDtos = order.getItems().stream()
-                    .sorted(Comparator.comparing(OrderItem::getId)).map(this::toItemDto).toList();
-            return new OrderResponse(
-                order.getId(),
-                order.getAnimalType(),
-                itemDtos
-            );
-        })
-        .toList();
-
-        return new CheckoutResponse(
-            checkout.getId(),
-            checkout.getCustomerName(),
-            checkout.getCustomerPhone(),
-            checkout.getCustomerEmail(),
-            checkout.getStatus(),
-            checkout.getCreatedAt(),
-            orderDtos
-        );
-    }
 
 
 
-
-
-    public CheckoutResponse getCheckout(Long checkoutId){
-        
-        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(()
+    public Checkout getCheckout(Long checkoutId){
+        return checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(()
                 -> new CheckoutNotFound(checkoutId));
-        return toCheckoutResponse(checkout);
     }
 
-
-
-
-
-
-    private Map<Long, Integer> mergeCutQuantities(List<CreateOrderItemRequest> items){
-        Map<Long, Integer> result = new LinkedHashMap<>();
-
-        for(CreateOrderItemRequest item : items){
-            Long cutId = item.cutId();
-            Integer qty = item.quantity();
-            result.merge(cutId, qty, Integer::sum);
-        }
-        return result;
-    }
-
-
-
-
-
-
-    public Page<CheckoutResponse> getAllCheckouts(Pageable pageable) {
-        
-        Page<Checkout> checkouts = checkoutRepository.findAll(pageable);
-        return checkouts.map(this::toCheckoutResponse);
-    }
-
-
-
-
-
-    @Transactional
-    public CheckoutResponse addOrderToCheckout(Long checkoutId, CreateOrderRequest orderReq){
-
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
+    public Checkout getCheckoutById(Long checkoutId){
+        return checkoutRepository.findById(checkoutId).orElseThrow(() ->
                 new CheckoutNotFound(checkoutId));
-        
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("add orders",  checkout.getStatus());
-        }
-
-        Order order = new Order(); 
-        order.setAnimal(orderReq.animal());
-
-        checkout.addOrder(order);
-
-        Map<Long, Integer> cutQty = mergeCutQuantities(orderReq.items());
-
-        for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
-            Long cutId = entry.getKey();
-            Integer quantity = entry.getValue();
-
-            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
-
-            if (cut.getAnimalType() != order.getAnimalType()){
-                throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + order.getAnimalType());
-            }
-
-            OrderItem item = new OrderItem();
-            item.setCut(cut);
-            item.setQuantity(quantity);
-
-            order.addItem(item);
-        }
-        
-        Checkout saved = checkoutRepository.save(checkout);
-        return toCheckoutResponse(saved);
     }
+
+
+    public void assertUnlocked(Checkout checkout, String action){
+        if(checkout.getStatus() != CheckoutStatus.DRAFT){
+            throw new CheckoutLockedException(action,  checkout.getStatus());
+        }
+    }
+
+
+
+
+
+
 
 
 
@@ -199,17 +99,9 @@ public class CheckoutService {
 
 
     @Transactional
-    public void removeOrderFromCheckout(Long checkoutId, Long orderId){
-        
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("remove orders", checkout.getStatus());
-        }
-
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
-                new OrderNotInCheckout(orderId, checkoutId));
+    public void removeOrderFromCheckout(Checkout checkout, Order order){
         checkout.removeOrder(order);
+        saveCheckout(checkout);
     }
 
 
@@ -219,112 +111,24 @@ public class CheckoutService {
 
 
 
-    @Transactional
-    public CheckoutResponse patchOrder(Long checkoutId, Long orderId, UpdateOrderRequest request){
-
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("edit orders", checkout.getStatus());
-        }
-
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
-                new OrderNotInCheckout(orderId, checkoutId));
-
-        if (request.animal() == null && request.items() == null){
-            throw new InvalidPatchRequest("At least one animal or item must be provided");
-        }
-        if(request.items() != null && request.items().isEmpty()){
-            throw new InvalidPatchRequest("Items must contain at least one item");
-        }
-        if(request.animal() != null && request.items() == null){
-            throw new InvalidPatchRequest("Changing animal requires updating items");
-        }
-        
-        AnimalType finalAnimal = (request.animal() != null ? request.animal() : order.getAnimalType());
-        order.setAnimal(finalAnimal);
-
-
-        if(request.items() != null){
-            Map<Long, Integer> cutQty = mergeCutQuantities(request.items());
-            order.getItems().clear(); 
-
-            for(Map.Entry<Long, Integer> entry : cutQty.entrySet()){
-                Long cutId = entry.getKey();
-                Integer quantity = entry.getValue();
-
-                Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
-                if(cut.getAnimalType() != finalAnimal){
-                    throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + finalAnimal);
-                }
-
-                OrderItem item = new OrderItem();
-                item.setCut(cut);
-                item.setQuantity(quantity);
-                order.addItem(item);
-            }
-        }
-
-        Checkout saved = checkoutRepository.save(checkout);
-        return toCheckoutResponse(saved);
-
-    }
 
 
 
 
 
 
-    @Transactional 
-    public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long orderItemId, UpdateItemRequest request){
-
-        Checkout checkout = checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
-
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("edit items", checkout.getStatus());
-        }
-        orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
-                new OrderNotInCheckout(orderId, checkoutId));
-        if(request.quantity() == null || request.quantity() < 1){
-            throw new InvalidPatchRequest("Quantity must be 1 or greater");
-        }
-
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(
-                orderItemId, orderId, checkoutId).orElseThrow(() ->
-                new OrderItemNotFound(orderItemId, orderId, checkoutId));
-
-        item.setQuantity(request.quantity());
-        orderItemRepository.save(item);
-        return toCheckoutResponse(checkout);
-
-    }
 
 
 
 
 
 
-    @Transactional
-    public void removeItemFromOrder(Long checkoutId, Long orderId, Long orderItemId){
-
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
-
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("remove items", checkout.getStatus());
-        }
-
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderItemId, orderId, checkoutId));
-
-        orderItemRepository.delete(item);
 
 
 
 
-    }
 
-
-    public Page<CheckoutResponse> searchCheckouts(
+    public Page<Checkout> searchCheckouts(
         Long checkoutId,
         CheckoutStatus status,
         String customerName,
@@ -362,26 +166,22 @@ public class CheckoutService {
             spec = spec.and(CheckoutSpecifications.customerPhoneContains(customerPhone));
         }
 
-        Page<Checkout> page = checkoutRepository.findAll(spec, pageable);
-
-        return page.map(this::toCheckoutResponse);
+        return checkoutRepository.findAll(spec, pageable);
     }
 
     
 
     @Transactional
-    public CheckoutResponse updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
+    public Checkout updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
         
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
+        Checkout checkout = getCheckoutById(checkoutId);
         CheckoutStatus currentStatus = checkout.getStatus();
         if(!isAllowedTransition(currentStatus, newStatus)){
             throw new InvalidStatusTransition(currentStatus, newStatus);
         }
 
         checkout.setStatus(newStatus);
-        Checkout saved = checkoutRepository.save(checkout);
-        return toCheckoutResponse(saved);
-
+        return checkoutRepository.save(checkout);
     }
 
     private boolean isAllowedTransition(CheckoutStatus current, CheckoutStatus next){
