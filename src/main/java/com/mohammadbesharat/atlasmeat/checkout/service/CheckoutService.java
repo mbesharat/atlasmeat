@@ -75,43 +75,6 @@ public class CheckoutService {
 
 
 
-    public OrderItemResponse toItemDto(OrderItem item){
-        return new OrderItemResponse(
-            item.getId(),
-            item.getCut().getId(),
-            item.getCut().getDisplayName(),
-            item.getQuantity()
-        );
-    }
-
-
-
-
-
-
-    private CheckoutResponse toCheckoutResponse(Checkout checkout){
-
-        List<OrderResponse> orderDtos = checkout.getOrders().stream().map(order -> {
-            List<OrderItemResponse> itemDtos = order.getItems().stream()
-                    .sorted(Comparator.comparing(OrderItem::getId)).map(this::toItemDto).toList();
-            return new OrderResponse(
-                order.getId(),
-                order.getAnimalType(),
-                itemDtos
-            );
-        })
-        .toList();
-
-        return new CheckoutResponse(
-            checkout.getId(),
-            checkout.getCustomerName(),
-            checkout.getCustomerPhone(),
-            checkout.getCustomerEmail(),
-            checkout.getStatus(),
-            checkout.getCreatedAt(),
-            orderDtos
-        );
-    }
 
 
 

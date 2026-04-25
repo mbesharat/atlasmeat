@@ -2,12 +2,14 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
+import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.exceptions.OrderNotFoundException;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -35,19 +37,24 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(this::toDto);
     }
 
-    private OrderResponse toDto(Order o){
-        List<OrderItemResponse> itemDtos = o.getItems().stream()
-            .map(item -> new OrderItemResponse(
-                    item.getId(),
-                    item.getCut().getId(),
-                    item.getCut().getDisplayName(),
-                    item.getQuantity()
-            ))
-            .toList();
+    private OrderResponse toDto(Order order){
+        List<OrderItemResponse> itemDtos = order.getItems().stream()
+                .sorted(Comparator.comparing(OrderItem::getId))
+                .map(this::toItemDto).toList();
         return new OrderResponse(
-            o.getId(),
-            o.getAnimalType(),
+            order.getId(),
+            order.getAnimalType(),
             itemDtos
+        );
+    }
+
+
+    public OrderItemResponse toItemDto(OrderItem item){
+        return new OrderItemResponse(
+                item.getId(),
+                item.getCut().getId(),
+                item.getCut().getDisplayName(),
+                item.getQuantity()
         );
     }
 }
