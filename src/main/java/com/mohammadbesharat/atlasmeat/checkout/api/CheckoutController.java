@@ -25,7 +25,7 @@ import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
-import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
+import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 

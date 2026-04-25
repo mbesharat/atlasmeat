@@ -3,8 +3,8 @@ package com.mohammadbesharat.atlasmeat.workflow.service;
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
-import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
-import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateOrderRequest;
+import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
+import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
@@ -13,7 +13,6 @@ import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
 import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.service.OrderService;
-import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ import java.util.Comparator;
 import java.util.*;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class WorkflowService {
@@ -102,6 +100,18 @@ public class WorkflowService {
             Map<Long, Integer> cutQty = orderService.mergeCutQuantities(request.items());
             orderService.replaceOrderItems(order, cutQty);
         }
+        return toCheckoutResponse(checkoutService.saveCheckout(checkout));
+    }
+
+    @Transactional
+    public CheckoutResponse patchItem(Long checkoutId, Long orderId, Long orderItemId, UpdateItemRequest request){
+        Checkout checkout = checkoutService.getCheckoutById(checkoutId);
+        checkoutService.assertUnlocked(checkout, "edit items");
+
+        orderService.findByIdAndCheckoutId(orderId, checkoutId);
+
+        OrderItem item = orderService.findByIdAndOrderIdAndCheckoutId(orderItemId, orderId, checkoutId);
+        item.setQuantity(request.quantity());
         return toCheckoutResponse(checkoutService.saveCheckout(checkout));
     }
 }

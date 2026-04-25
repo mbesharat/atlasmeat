@@ -1,9 +1,8 @@
-package com.mohammadbesharat.atlasmeat.checkout.dto;
+package com.mohammadbesharat.atlasmeat.order.dto;
 
 import java.util.List;
 
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 
 import jakarta.validation.Valid;
 
