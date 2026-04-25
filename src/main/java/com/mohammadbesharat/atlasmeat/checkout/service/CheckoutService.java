@@ -23,19 +23,15 @@ import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidPatchRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderItemNotFound;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.OrderNotInCheckout;
+import com.mohammadbesharat.atlasmeat.common.exception.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
-import com.mohammadbesharat.atlasmeat.order.dto.OrderItemResponse;
-import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderItemRequest;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
-import com.mohammadbesharat.atlasmeat.order.dto.OrderResponse;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
 import jakarta.transaction.Transactional;
@@ -121,18 +117,11 @@ public class CheckoutService {
     }
 
     @Transactional
-    public void removeOrderFromCheckout(Long checkoutId, Long orderId){
-        
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("remove orders", checkout.getStatus());
-        }
-
-        Order order = orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(() ->
-                new OrderNotInCheckout(orderId, checkoutId));
+    public void removeOrderFromCheckout(Checkout checkout, Order order){
         checkout.removeOrder(order);
+        saveCheckout(checkout);
     }
+
 
 
 

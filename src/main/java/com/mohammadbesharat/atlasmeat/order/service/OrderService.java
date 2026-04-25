@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutAnimalMismatch;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotFound;
+import com.mohammadbesharat.atlasmeat.common.exception.OrderNotInCheckout;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
@@ -99,5 +100,10 @@ public class OrderService {
 
             order.addItem(item);
         }
+    }
+
+    public Order findByIdAndCheckoutId(Long orderId, Long checkoutId){
+        return orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(()
+                -> new OrderNotInCheckout(orderId, checkoutId));
     }
 }

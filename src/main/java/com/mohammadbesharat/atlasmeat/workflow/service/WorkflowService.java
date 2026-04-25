@@ -73,5 +73,15 @@ public class WorkflowService {
         orderService.addItemsToOrder(order, cutQty);
         return toCheckoutResponse(checkoutService.saveCheckout(checkout));
     }
+
+
+    public void removeOrderFromCheckout(Long checkoutId, Long orderId){
+
+        Checkout checkout = checkoutService.getCheckoutById(checkoutId);
+        checkoutService.assertUnlocked(checkout, "remove orders");
+
+        Order order = orderService.findByIdAndCheckoutId(orderId, checkoutId);
+        checkoutService.removeOrderFromCheckout(checkout, order);
+    }
 }
 
