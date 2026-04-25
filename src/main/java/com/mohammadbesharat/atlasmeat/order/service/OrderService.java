@@ -139,4 +139,7 @@ public class OrderService {
     }
 
 
+    public void removeItemFromOrder(OrderItem item) {
+        orderItemRepository.delete(item);
+    }
 }

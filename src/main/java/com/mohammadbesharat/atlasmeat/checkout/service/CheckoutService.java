@@ -133,23 +133,6 @@ public class CheckoutService {
 
 
 
-    @Transactional
-    public void removeItemFromOrder(Long checkoutId, Long orderId, Long orderItemId){
-
-        Checkout checkout = checkoutRepository.findById(checkoutId).orElseThrow(() -> new CheckoutNotFound(checkoutId));
-
-        if(checkout.getStatus() != CheckoutStatus.DRAFT){
-            throw new CheckoutLockedException("remove items", checkout.getStatus());
-        }
-
-        OrderItem item = orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(orderItemId, orderId, checkoutId).orElseThrow(() -> new OrderItemNotFound(orderItemId, orderId, checkoutId));
-
-        orderItemRepository.delete(item);
-
-
-
-
-    }
 
 
     public Page<CheckoutResponse> searchCheckouts(

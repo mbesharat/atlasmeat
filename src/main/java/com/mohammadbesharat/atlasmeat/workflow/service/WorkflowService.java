@@ -114,5 +114,13 @@ public class WorkflowService {
         item.setQuantity(request.quantity());
         return toCheckoutResponse(checkoutService.saveCheckout(checkout));
     }
+
+    public void removeItemFromOrder(Long checkoutId, Long orderId, Long orderItemId){
+        Checkout checkout = checkoutService.getCheckoutById(checkoutId);
+        checkoutService.assertUnlocked(checkout, "remove items");
+
+        OrderItem item =  orderService.findByIdAndOrderIdAndCheckoutId(orderItemId, orderId, checkoutId);
+        orderService.removeItemFromOrder(item);
+    }
 }
 
