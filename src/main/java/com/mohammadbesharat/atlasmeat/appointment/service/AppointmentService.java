@@ -62,7 +62,7 @@ public class AppointmentService {
                 new AppointmentNotFoundException(id)));
     }
 
-    public Page<Appointment> searchAppointments(
+    public Page<AppointmentResponse> searchAppointments(
             AppointmentStatus status,
             String customerName,
             String customerPhone,
@@ -87,7 +87,7 @@ public class AppointmentService {
         if(scheduledDate != null){
             spec = spec.and(AppointmentSpecifications.scheduledDateOn(scheduledDate));
         }
-        return appointmentRepository.findAll(spec, pageable);
+        return appointmentRepository.findAll(spec, pageable).map(this::toAppointmentResponse);
     }
 
     private boolean isAllowedTransition(AppointmentStatus current, AppointmentStatus next) {
