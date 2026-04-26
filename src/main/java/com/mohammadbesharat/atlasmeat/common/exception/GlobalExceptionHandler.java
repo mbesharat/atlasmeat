@@ -1,5 +1,8 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFoundException;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransitionException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.*;
 import com.mohammadbesharat.atlasmeat.order.exceptions.*;
 
@@ -33,6 +36,14 @@ public class GlobalExceptionHandler {
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
+    @ExceptionHandler(AppointmentNotFoundException.class)
+    public ResponseEntity<ApiError> handleAppointmentNotFound(
+        AppointmentNotFoundException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
+
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ApiError> handleOrderNotfound(
         OrderNotFoundException exception,
@@ -47,7 +58,7 @@ public class GlobalExceptionHandler {
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
-     @ExceptionHandler(CutAnimalMismatchException.class)
+    @ExceptionHandler(CutAnimalMismatchException.class)
     public ResponseEntity<ApiError> handleCutAnimalMismatch(
         CutAnimalMismatchException exception,
         HttpServletRequest request){
@@ -62,8 +73,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidCheckoutStatusTransitionException.class)
-    public ResponseEntity<ApiError> handleInvalidStatusTransition(
+    public ResponseEntity<ApiError> handleInvalidCheckoutStatusTransition(
         InvalidCheckoutStatusTransitionException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidAppointmentStatusTransitionException.class)
+    public ResponseEntity<ApiError> handleInvalidAppointmentStatusTransition(
+        InvalidAppointmentStatusTransitionException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
