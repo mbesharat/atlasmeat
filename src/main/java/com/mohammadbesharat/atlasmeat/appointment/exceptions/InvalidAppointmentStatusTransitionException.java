@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class InvalidAppointmentStatusTransition extends RuntimeException {
+public class InvalidAppointmentStatusTransitionException extends RuntimeException {
 
-    public InvalidAppointmentStatusTransition(String message){
+    public InvalidAppointmentStatusTransitionException(String message){
         super (message);
     }
 
-    public InvalidAppointmentStatusTransition(AppointmentStatus current, AppointmentStatus newStatus){
+    public InvalidAppointmentStatusTransitionException(AppointmentStatus current, AppointmentStatus newStatus){
         super(current + " cannot be changed to " + newStatus);
     }
 }

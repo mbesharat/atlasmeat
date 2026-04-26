@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class CheckoutNotFoundIntegrationTest extends IntegrationTestBase {
+class CheckoutNotFoundExceptionIntegrationTest extends IntegrationTestBase {
 
     private long ribeyeId;
 

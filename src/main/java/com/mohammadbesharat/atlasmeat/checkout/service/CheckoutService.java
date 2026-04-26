@@ -10,41 +10,25 @@ import org.springframework.stereotype.Service;
 
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
-import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
-import com.mohammadbesharat.atlasmeat.order.exceptions.OrderItemNotFound;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFoundException;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRangeException;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidCheckoutStatusTransitionException;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutRepository;
 import com.mohammadbesharat.atlasmeat.checkout.repo.CheckoutSpecifications;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
-import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
-import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
-import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
-import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class CheckoutService {
  
     
     private final CheckoutRepository checkoutRepository;
-    private final OrderRepository orderRepository;
-    private final CutRepository cutRepository;
-    private final OrderItemRepository orderItemRepository;
 
-    public CheckoutService(
-            CheckoutRepository checkoutRepository,
-            CutRepository cutRepository,
-            OrderRepository orderRepository,
-            OrderItemRepository orderItemRepository){
+    public CheckoutService(CheckoutRepository checkoutRepository){
         this.checkoutRepository = checkoutRepository;
-        this.cutRepository = cutRepository;
-        this.orderRepository = orderRepository;
-        this.orderItemRepository = orderItemRepository;
     }
 
     @Transactional
@@ -59,27 +43,19 @@ public class CheckoutService {
     }
 
     public Checkout saveCheckout(Checkout checkout){
+
         return checkoutRepository.save(checkout);
     }
 
-
-
-
-
-
-
-
-
     public Checkout getCheckout(Long checkoutId){
         return checkoutRepository.findByIdWithOrdersItemsAndCut(checkoutId).orElseThrow(()
-                -> new CheckoutNotFound(checkoutId));
+                -> new CheckoutNotFoundException(checkoutId));
     }
 
     public Checkout getCheckoutById(Long checkoutId){
         return checkoutRepository.findById(checkoutId).orElseThrow(() ->
-                new CheckoutNotFound(checkoutId));
+                new CheckoutNotFoundException(checkoutId));
     }
-
 
     public void assertUnlocked(Checkout checkout, String action){
         if(checkout.getStatus() != CheckoutStatus.DRAFT){
@@ -87,46 +63,11 @@ public class CheckoutService {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     @Transactional
     public void removeOrderFromCheckout(Checkout checkout, Order order){
         checkout.removeOrder(order);
         saveCheckout(checkout);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public Page<Checkout> searchCheckouts(
         Long checkoutId,
@@ -139,14 +80,15 @@ public class CheckoutService {
         Pageable pageable
     ){
         if (from != null && to != null && from.isAfter(to)){
-            throw new InvalidDateRange();
+            throw new InvalidDateRangeException();
         }
         LocalDateTime start = null;
         LocalDateTime endExclusive = null;
         if (from != null) start = from.atStartOfDay();
         if (to != null) endExclusive = to.plusDays(1).atStartOfDay();
 
-        Specification<Checkout> spec = (root, query, cb) -> cb.conjunction();
+        Specification<Checkout> spec = (root, query, cb)
+                -> cb.conjunction();
         if (status != null){
             spec = spec.and(CheckoutSpecifications.hasStatus(status));
         }
@@ -169,15 +111,13 @@ public class CheckoutService {
         return checkoutRepository.findAll(spec, pageable);
     }
 
-    
-
     @Transactional
     public Checkout updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
         
         Checkout checkout = getCheckoutById(checkoutId);
         CheckoutStatus currentStatus = checkout.getStatus();
         if(!isAllowedTransition(currentStatus, newStatus)){
-            throw new InvalidStatusTransition(currentStatus, newStatus);
+            throw new InvalidCheckoutStatusTransitionException(currentStatus, newStatus);
         }
 
         checkout.setStatus(newStatus);

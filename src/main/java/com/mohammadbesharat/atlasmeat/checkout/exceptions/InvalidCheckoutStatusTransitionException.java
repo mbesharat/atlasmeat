@@ -7,13 +7,13 @@ import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class InvalidStatusTransition extends RuntimeException {
+public class InvalidCheckoutStatusTransitionException extends RuntimeException {
 
-     public InvalidStatusTransition(String message){
+     public InvalidCheckoutStatusTransitionException(String message){
         super (message);
     }
     
-    public InvalidStatusTransition(CheckoutStatus current, CheckoutStatus newStatus){
+    public InvalidCheckoutStatusTransitionException(CheckoutStatus current, CheckoutStatus newStatus){
         super(current + " cannot be changed to " + newStatus);
     }
 }

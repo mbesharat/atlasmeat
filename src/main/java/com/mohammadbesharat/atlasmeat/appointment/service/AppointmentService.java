@@ -5,8 +5,8 @@ import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
 import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
 import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
 import com.mohammadbesharat.atlasmeat.appointment.dto.CreateAppointmentRequest;
-import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFound;
-import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransition;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFoundException;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransitionException;
 import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentRepository;
 
 import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentSpecifications;
@@ -59,7 +59,7 @@ public class AppointmentService {
 
     public AppointmentResponse getAppointmentById(Long id){
         return toAppointmentResponse(appointmentRepository.findById(id).orElseThrow(() ->
-                new AppointmentNotFound(id)));
+                new AppointmentNotFoundException(id)));
     }
 
     public Page<Appointment> searchAppointments(
@@ -102,11 +102,11 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse updateAppointmentStatus(Long appointmentId, AppointmentStatus status) {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() ->
-                new AppointmentNotFound(appointmentId));
+                new AppointmentNotFoundException(appointmentId));
         AppointmentStatus currentStatus = appointment.getStatus();
 
         if(!isAllowedTransition(currentStatus, status)){
-            throw new InvalidAppointmentStatusTransition(currentStatus, status);
+            throw new InvalidAppointmentStatusTransitionException(currentStatus, status);
         }
         appointment.setStatus(status);
         return toAppointmentResponse(appointmentRepository.save(appointment));
@@ -115,7 +115,7 @@ public class AppointmentService {
     @Transactional
     public AppointmentResponse setAppointmentDate(Long appointmentId, LocalDate date) {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() ->
-                new AppointmentNotFound(appointmentId));
+                new AppointmentNotFoundException(appointmentId));
 
         appointment.setScheduledDate(date);
         return toAppointmentResponse(appointmentRepository.save(appointment));

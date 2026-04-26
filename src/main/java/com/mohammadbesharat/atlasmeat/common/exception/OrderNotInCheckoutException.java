@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class OrderNotInCheckout extends RuntimeException {
+public class OrderNotInCheckoutException extends RuntimeException {
 
-  public OrderNotInCheckout(Long orderId, Long checkoutId) {
+  public OrderNotInCheckoutException(Long orderId, Long checkoutId) {
     super("Order not found with id " + orderId + " in checkout " + checkoutId);
   }
 
-  public OrderNotInCheckout(String message) {
+  public OrderNotInCheckoutException(String message) {
     super(message);
   }
 }
