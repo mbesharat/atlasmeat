@@ -1,5 +1,6 @@
 package com.mohammadbesharat.atlasmeat;
 
+import com.mohammadbesharat.atlasmeat.checkout.CheckoutFixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -118,7 +119,7 @@ public abstract class IntegrationTestBase {
     protected long createCheckoutAndGetId() throws Exception{
 
         String response = postJsonAndReturnBody("/checkouts", 
-            TestFixtures.createValidCheckout());
+            CheckoutFixtures.createValidCheckout());
 
         return mapper.readTree(response)
             .get("checkoutId")
@@ -127,7 +128,7 @@ public abstract class IntegrationTestBase {
 
     protected OrderIds addBeefOrderAndGetIds(long checkoutId, long cutId, int quantity) throws Exception{
         String response = postJson("/checkouts/{checkoutId}/orders", 
-                            TestFixtures.addBeefOrder(cutId, quantity), checkoutId)
+                            CheckoutFixtures.addBeefOrder(cutId, quantity), checkoutId)
                             .andExpect(status().isOk())
                             .andExpect(jsonPath("$.orders[0].id").exists())
                             .andExpect(jsonPath("$.orders[0].animal").value("BEEF"))
@@ -148,7 +149,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected ResultActions patchStatus(long checkoutId, String status) throws Exception{
-        return patchJson("/checkouts/{checkoutId}/status", TestFixtures.updateCheckoutStatus(status), checkoutId);
+        return patchJson("/checkouts/{checkoutId}/status", CheckoutFixtures.updateCheckoutStatus(status), checkoutId);
     }
 
     protected ResultActions submitCheckout(long checkoutId) throws Exception{

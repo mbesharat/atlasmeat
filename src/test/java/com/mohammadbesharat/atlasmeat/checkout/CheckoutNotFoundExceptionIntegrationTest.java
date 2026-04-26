@@ -1,5 +1,6 @@
-package com.mohammadbesharat.atlasmeat;
+package com.mohammadbesharat.atlasmeat.checkout;
 
+import com.mohammadbesharat.atlasmeat.IntegrationTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -28,7 +29,7 @@ class CheckoutNotFoundExceptionIntegrationTest extends IntegrationTestBase {
     void return404WhenAddingOrderToMissingCheckout() throws Exception{
 
         postJson("/checkouts/{checkoutId}/orders", 
-            TestFixtures.addBeefOrder(1, 3), 99999)
+            CheckoutFixtures.addBeefOrder(1, 3), 99999)
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message")
             .value("Checkout not found with id " + 99999));
@@ -42,7 +43,7 @@ class CheckoutNotFoundExceptionIntegrationTest extends IntegrationTestBase {
         long badOrderItemId = ids.orderItemId() + 99999;
 
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}", 
-            TestFixtures.patchItemQuantity(5), 
+            CheckoutFixtures.patchItemQuantity(5),
             checkoutId, ids.orderId(), badOrderItemId)
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message")

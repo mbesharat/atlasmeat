@@ -1,5 +1,6 @@
-package com.mohammadbesharat.atlasmeat;
+package com.mohammadbesharat.atlasmeat.checkout;
 
+import com.mohammadbesharat.atlasmeat.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,7 +38,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         long checkoutId = createCheckoutAndGetId();
 
         patchJson("/checkouts/{checkoutId}/status", 
-            TestFixtures.updateCheckoutPaid(), checkoutId)
+            CheckoutFixtures.updateCheckoutPaid(), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
@@ -53,7 +54,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/status",
-            TestFixtures.updateCheckoutDraft(), checkoutId)
+            CheckoutFixtures.updateCheckoutDraft(), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
@@ -70,7 +71,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         markAsPaid(checkoutId);
         
         //PAID to DRAFT
-        patchJson("/checkouts/{checkoutId}/status", TestFixtures.updateCheckoutDraft(), checkoutId)
+        patchJson("/checkouts/{checkoutId}/status", CheckoutFixtures.updateCheckoutDraft(), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
@@ -78,7 +79,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
                 .value("PAID cannot be changed to DRAFT"));
 
         //PAID to CANCELLED
-        patchJson("/checkouts/{checkoutId}/status", TestFixtures.updateCheckoutCancelled(), checkoutId)
+        patchJson("/checkouts/{checkoutId}/status", CheckoutFixtures.updateCheckoutCancelled(), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
@@ -95,7 +96,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}", 
-            TestFixtures.patchItemQuantity(10),
+            CheckoutFixtures.patchItemQuantity(10),
             checkoutId,
             ids.orderId(),
             ids.orderItemId())
@@ -114,7 +115,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
         
         submitCheckout(checkoutId);
         postJson("/checkouts/{checkoutId}/orders",
-            TestFixtures.addBeefOrder2(brisketId, 5), checkoutId)
+            CheckoutFixtures.addBeefOrder2(brisketId, 5), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))
@@ -123,7 +124,7 @@ class CheckoutConflictIntegrationTest extends IntegrationTestBase {
 
         markAsPaid(checkoutId);
         postJson("/checkouts/{checkoutId}/orders",
-            TestFixtures.addBeefOrder2(brisketId, 5), checkoutId)
+            CheckoutFixtures.addBeefOrder2(brisketId, 5), checkoutId)
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.error")
                 .value("Conflict"))

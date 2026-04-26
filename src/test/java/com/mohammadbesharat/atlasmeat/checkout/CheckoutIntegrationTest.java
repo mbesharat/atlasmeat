@@ -1,10 +1,11 @@
-package com.mohammadbesharat.atlasmeat;
+package com.mohammadbesharat.atlasmeat.checkout;
 
+import com.mohammadbesharat.atlasmeat.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class CheckoutIntegrationTest extends IntegrationTestBase{
+class CheckoutIntegrationTest extends IntegrationTestBase {
 
     private long ribeyeId;
 
@@ -30,7 +31,7 @@ class CheckoutIntegrationTest extends IntegrationTestBase{
 
         //Patch item quantity
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}", 
-            TestFixtures.patchItemQuantity(5), checkoutId, orderId, orderItemId)
+            CheckoutFixtures.patchItemQuantity(5), checkoutId, orderId, orderItemId)
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.orders[0].items[0].quantity").value(5));
 

@@ -1,11 +1,12 @@
-package com.mohammadbesharat.atlasmeat;
+package com.mohammadbesharat.atlasmeat.checkout;
 
+import com.mohammadbesharat.atlasmeat.IntegrationTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-class CheckoutErrorContractIntegrationTest extends IntegrationTestBase{
+class CheckoutErrorContractIntegrationTest extends IntegrationTestBase {
 
     long ribeyeId;
 
@@ -19,7 +20,7 @@ class CheckoutErrorContractIntegrationTest extends IntegrationTestBase{
     void return400ErrorShape_whenMissingEmail() throws Exception{
 
         postJson("/checkouts", 
-            TestFixtures.createCheckoutMissingEmail())
+            CheckoutFixtures.createCheckoutMissingEmail())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.status")
                 .value(400))
@@ -52,7 +53,7 @@ class CheckoutErrorContractIntegrationTest extends IntegrationTestBase{
         submitCheckout(checkoutId);
 
         patchJson("/checkouts/{checkoutId}/orders/{orderId}/items/{orderItemId}",
-            TestFixtures.patchItemQuantity(10), 
+            CheckoutFixtures.patchItemQuantity(10),
             checkoutId, ids.orderId(), ids.orderItemId())
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.status")
