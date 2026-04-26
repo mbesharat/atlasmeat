@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.appointment.domain;
 
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
