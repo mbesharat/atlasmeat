@@ -1,5 +1,7 @@
 package com.mohammadbesharat.atlasmeat;
 
+import com.mohammadbesharat.atlasmeat.appointment.AppointmentFixtures;
+import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
 import com.mohammadbesharat.atlasmeat.checkout.CheckoutFixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -115,7 +117,7 @@ public abstract class IntegrationTestBase {
 
 
 
-    //DRIVER HELPERS
+    // CHECKOUT DRIVER HELPERS
     protected long createCheckoutAndGetId() throws Exception{
 
         String response = postJsonAndReturnBody("/checkouts", 
@@ -164,6 +166,19 @@ public abstract class IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status")
                 .value("PAID"));
+    }
+
+
+
+    //APPOINTMENT DRIVER HELPERS
+    protected Long createAppointment() throws Exception{
+
+        String response = postJsonAndReturnBody("/appointments",
+                AppointmentFixtures.createValidAppointment());
+
+        return mapper.readTree(response)
+                .get("id")
+                .asLong();
     }
 
 }
