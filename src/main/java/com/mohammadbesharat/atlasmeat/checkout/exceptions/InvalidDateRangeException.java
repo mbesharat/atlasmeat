@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidDateRange extends RuntimeException {
+public class InvalidDateRangeException extends RuntimeException {
 
-     public InvalidDateRange(String message){
+     public InvalidDateRangeException(String message){
         super (message);
     }
     
-    public InvalidDateRange(){
+    public InvalidDateRangeException(){
         super("From must be on or before to");
     }
 }

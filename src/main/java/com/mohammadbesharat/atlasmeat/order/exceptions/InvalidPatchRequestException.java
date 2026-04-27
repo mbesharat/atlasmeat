@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class InvalidPatchRequest extends RuntimeException {
+public class InvalidPatchRequestException extends RuntimeException {
 
-     public InvalidPatchRequest(String message){
+     public InvalidPatchRequestException(String message){
         super (message);
     }
     
-    public InvalidPatchRequest(){
+    public InvalidPatchRequestException(){
         super("Nothing was sent to be updated");
     }
 }

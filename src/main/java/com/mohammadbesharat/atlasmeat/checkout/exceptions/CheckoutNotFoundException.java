@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class CheckoutNotFound extends RuntimeException{
+public class CheckoutNotFoundException extends RuntimeException{
     
-    public CheckoutNotFound(String message){
+    public CheckoutNotFoundException(String message){
         super (message);
     }
     
-    public CheckoutNotFound(Long id){
+    public CheckoutNotFoundException(Long id){
         super("Checkout not found with id " + id);
     }
 }

@@ -1,9 +1,9 @@
-package com.mohammadbesharat.atlasmeat;
+package com.mohammadbesharat.atlasmeat.checkout;
 
 
-public final class TestFixtures {
+public final class CheckoutFixtures {
 
-    private TestFixtures(){}
+    private CheckoutFixtures(){}
 
     public static String createValidCheckout(){
         return 

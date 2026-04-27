@@ -1,5 +1,8 @@
 package com.mohammadbesharat.atlasmeat;
 
+import com.mohammadbesharat.atlasmeat.appointment.AppointmentFixtures;
+import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
+import com.mohammadbesharat.atlasmeat.checkout.CheckoutFixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -102,6 +105,12 @@ public abstract class IntegrationTestBase {
         return assertJsonResponse(actions);
     }
 
+    protected ResultActions patchWithParam(String urlTemplate, String paramName, String paramValue, Object... uriVars) throws Exception{
+        ResultActions actions = mvc.perform(patch(urlTemplate, uriVars)
+                .param(paramName, paramValue));
+        return assertJsonResponse(actions);
+    }
+
     protected ResultActions deleteJson(String urlTemplate, Object... uriVars) throws Exception{
         return mvc.perform(delete(urlTemplate, uriVars))
             .andExpect(status().isNoContent());
@@ -114,11 +123,11 @@ public abstract class IntegrationTestBase {
 
 
 
-    //DRIVER HELPERS
+    // CHECKOUT DRIVER HELPERS
     protected long createCheckoutAndGetId() throws Exception{
 
         String response = postJsonAndReturnBody("/checkouts", 
-            TestFixtures.createValidCheckout());
+            CheckoutFixtures.createValidCheckout());
 
         return mapper.readTree(response)
             .get("checkoutId")
@@ -127,7 +136,7 @@ public abstract class IntegrationTestBase {
 
     protected OrderIds addBeefOrderAndGetIds(long checkoutId, long cutId, int quantity) throws Exception{
         String response = postJson("/checkouts/{checkoutId}/orders", 
-                            TestFixtures.addBeefOrder(cutId, quantity), checkoutId)
+                            CheckoutFixtures.addBeefOrder(cutId, quantity), checkoutId)
                             .andExpect(status().isOk())
                             .andExpect(jsonPath("$.orders[0].id").exists())
                             .andExpect(jsonPath("$.orders[0].animal").value("BEEF"))
@@ -148,7 +157,7 @@ public abstract class IntegrationTestBase {
     }
 
     protected ResultActions patchStatus(long checkoutId, String status) throws Exception{
-        return patchJson("/checkouts/{checkoutId}/status", TestFixtures.updateCheckoutStatus(status), checkoutId);
+        return patchJson("/checkouts/{checkoutId}/status", CheckoutFixtures.updateCheckoutStatus(status), checkoutId);
     }
 
     protected ResultActions submitCheckout(long checkoutId) throws Exception{
@@ -163,6 +172,28 @@ public abstract class IntegrationTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status")
                 .value("PAID"));
+    }
+
+
+
+    //APPOINTMENT DRIVER HELPERS
+    protected ResultActions createAppointment() throws Exception{
+        return postJson("/appointments", AppointmentFixtures.createValidAppointment());
+    }
+
+    protected Long createAppointmentAndGetId() throws Exception{
+
+        String response = postJsonAndReturnBody("/appointments",
+                AppointmentFixtures.createValidAppointment());
+
+        return mapper.readTree(response)
+                .get("id")
+                .asLong();
+    }
+
+    protected ResultActions getAppointmentById(Long appointmentId) throws Exception{
+        return  getJson("/appointments/{id}", appointmentId)
+                .andExpect(status().isOk());
     }
 
 }

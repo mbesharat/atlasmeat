@@ -1,11 +1,10 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutLockedException;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.CheckoutNotFound;
+import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFoundException;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransitionException;
+import com.mohammadbesharat.atlasmeat.checkout.exceptions.*;
 import com.mohammadbesharat.atlasmeat.order.exceptions.*;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.CutNotInOrder;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidDateRange;
-import com.mohammadbesharat.atlasmeat.checkout.exceptions.InvalidStatusTransition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +29,20 @@ public class GlobalExceptionHandler {
 
     //404 error 
 
-    @ExceptionHandler(CheckoutNotFound.class)
+    @ExceptionHandler(CheckoutNotFoundException.class)
     public ResponseEntity<ApiError> handleCheckoutNotFound(
-        CheckoutNotFound exception,
+        CheckoutNotFoundException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
+
+    @ExceptionHandler(AppointmentNotFoundException.class)
+    public ResponseEntity<ApiError> handleAppointmentNotFound(
+        AppointmentNotFoundException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+    }
+
 
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ApiError> handleOrderNotfound(
@@ -44,30 +51,37 @@ public class GlobalExceptionHandler {
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(CutNotFound.class)
+    @ExceptionHandler(CutNotFoundException.class)
     public ResponseEntity<ApiError> handleCutNotFound(
-        CutNotFound exception,
+        CutNotFoundException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
-     @ExceptionHandler(CutAnimalMismatch.class)
+    @ExceptionHandler(CutAnimalMismatchException.class)
     public ResponseEntity<ApiError> handleCutAnimalMismatch(
-        CutAnimalMismatch exception,
+        CutAnimalMismatchException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(InvalidDateRange.class)
+    @ExceptionHandler(InvalidDateRangeException.class)
     public ResponseEntity<ApiError> handleInvalidDateRange(
-        InvalidDateRange exception,
+        InvalidDateRangeException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(InvalidStatusTransition.class)
-    public ResponseEntity<ApiError> handleInvalidStatusTransition(
-        InvalidStatusTransition exception,
+    @ExceptionHandler(InvalidCheckoutStatusTransitionException.class)
+    public ResponseEntity<ApiError> handleInvalidCheckoutStatusTransition(
+        InvalidCheckoutStatusTransitionException exception,
+        HttpServletRequest request){
+            return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(InvalidAppointmentStatusTransitionException.class)
+    public ResponseEntity<ApiError> handleInvalidAppointmentStatusTransition(
+        InvalidAppointmentStatusTransitionException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
@@ -79,30 +93,30 @@ public class GlobalExceptionHandler {
             return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(OrderNotInCheckout.class)
+    @ExceptionHandler(OrderNotInCheckoutException.class)
     public ResponseEntity<ApiError> handleOrderNotInCheckout(
-        OrderNotInCheckout exception,
+        OrderNotInCheckoutException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(CutNotInOrder.class)
+    @ExceptionHandler(CutNotInOrderException.class)
     public ResponseEntity<ApiError> handleCutNotInOrder(
-        CutNotInOrder exception,
+        CutNotInOrderException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(OrderItemNotFound.class)
+    @ExceptionHandler(OrderItemNotFoundException.class)
     public ResponseEntity<ApiError> handleOrderItemNotFound(
-        OrderItemNotFound exception,
+        OrderItemNotFoundException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
     }
 
-    @ExceptionHandler(InvalidPatchRequest.class)
+    @ExceptionHandler(InvalidPatchRequestException.class)
     public ResponseEntity<ApiError> handleInvalidPatchRequest(
-        InvalidPatchRequest exception,
+        InvalidPatchRequestException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
     }

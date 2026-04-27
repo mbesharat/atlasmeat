@@ -2,11 +2,11 @@ package com.mohammadbesharat.atlasmeat.order.service;
 
 
 import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
-import com.mohammadbesharat.atlasmeat.order.exceptions.CutAnimalMismatch;
-import com.mohammadbesharat.atlasmeat.order.exceptions.CutNotFound;
-import com.mohammadbesharat.atlasmeat.order.exceptions.OrderItemNotFound;
-import com.mohammadbesharat.atlasmeat.order.exceptions.InvalidPatchRequest;
-import com.mohammadbesharat.atlasmeat.common.exception.OrderNotInCheckout;
+import com.mohammadbesharat.atlasmeat.order.exceptions.CutAnimalMismatchException;
+import com.mohammadbesharat.atlasmeat.order.exceptions.CutNotFoundException;
+import com.mohammadbesharat.atlasmeat.order.exceptions.OrderItemNotFoundException;
+import com.mohammadbesharat.atlasmeat.order.exceptions.InvalidPatchRequestException;
+import com.mohammadbesharat.atlasmeat.common.exception.OrderNotInCheckoutException;
 import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.domain.Order;
 import com.mohammadbesharat.atlasmeat.order.domain.OrderItem;
@@ -54,7 +54,7 @@ public class OrderService {
     }
 
     public Cut findCutById(Long cutId){
-        return cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
+        return cutRepository.findById(cutId).orElseThrow(() -> new CutNotFoundException(cutId));
     }
 
     private OrderResponse toDto(Order order){
@@ -94,10 +94,10 @@ public class OrderService {
             Long cutId = entry.getKey();
             Integer quantity = entry.getValue();
 
-            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFound(cutId));
+            Cut cut = cutRepository.findById(cutId).orElseThrow(() -> new CutNotFoundException(cutId));
 
             if (cut.getAnimalType() != order.getAnimalType()){
-                throw new CutAnimalMismatch(cutId + " (" + cut.getDisplayName() + ")" + order.getAnimalType());
+                throw new CutAnimalMismatchException(cutId + " (" + cut.getDisplayName() + ")" + order.getAnimalType());
             }
 
             OrderItem item = new OrderItem();
@@ -115,19 +115,19 @@ public class OrderService {
 
     public Order findByIdAndCheckoutId(Long orderId, Long checkoutId){
         return orderRepository.findByIdAndCheckoutId(orderId, checkoutId).orElseThrow(()
-                -> new OrderNotInCheckout(orderId, checkoutId));
+                -> new OrderNotInCheckoutException(orderId, checkoutId));
     }
 
     public void validatePatchRequest(UpdateOrderRequest request){
 
         if (request.animal() == null && request.items() == null){
-            throw new InvalidPatchRequest("At least one animal or item must be provided");
+            throw new InvalidPatchRequestException("At least one animal or item must be provided");
         }
         if(request.items() != null && request.items().isEmpty()){
-            throw new InvalidPatchRequest("Items must contain at least one item");
+            throw new InvalidPatchRequestException("Items must contain at least one item");
         }
         if(request.animal() != null && request.items() == null){
-            throw new InvalidPatchRequest("Changing animal requires updating items");
+            throw new InvalidPatchRequestException("Changing animal requires updating items");
         }
 
     }
@@ -135,7 +135,7 @@ public class OrderService {
     public OrderItem findByIdAndOrderIdAndCheckoutId(Long orderItemId, Long orderId, Long checkoutId){
         return orderItemRepository.findByIdAndOrderIdAndOrderCheckoutId(
                 orderItemId, orderId, checkoutId).orElseThrow(() ->
-                new OrderItemNotFound(orderItemId, orderId, checkoutId));
+                new OrderItemNotFoundException(orderItemId, orderId, checkoutId));
     }
 
 
