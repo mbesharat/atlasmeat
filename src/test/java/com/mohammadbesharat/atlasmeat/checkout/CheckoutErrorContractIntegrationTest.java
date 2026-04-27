@@ -3,7 +3,7 @@ package com.mohammadbesharat.atlasmeat.checkout;
 import com.mohammadbesharat.atlasmeat.IntegrationTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 class CheckoutErrorContractIntegrationTest extends IntegrationTestBase {
