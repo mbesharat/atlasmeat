@@ -25,6 +25,7 @@ public class Appointment {
     private AppointmentStatus status;
     private Long checkoutId;
     private LocalDate scheduledDate;
+    @Column(precision = 7, scale = 2)
     private BigDecimal hangingWeight;
 
     public Long getId() {return id;}
