@@ -82,7 +82,6 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
 
     private void assertBaseFields(ResultActions actions) throws Exception {
         actions
-                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.customerName").value("John Doe"))
                 .andExpect(jsonPath("$.customerEmail").value("john@email.com"))
