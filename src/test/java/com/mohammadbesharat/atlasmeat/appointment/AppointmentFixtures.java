@@ -17,4 +17,125 @@ public final class AppointmentFixtures {
         }
         """;
     }
+
+    public static String createAppointmentMissingName(){
+        return
+            """
+            {
+                "customerEmail" : "john@email.com",
+                "customerPhone" : "111-222-333",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentMissingEmail(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerPhone" : "111-222-333",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentMissingPhone(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerEmail" : "john@email.com",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentInvalidEmail(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerEmail" : "johnemail.com",
+                "customerPhone" : "111-222-333",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentMissingContactPreference(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerEmail" : "john@email.com",
+                "customerPhone" : "111-222-333",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentMissingAnimalType(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerEmail" : "john@email.com",
+                "customerPhone" : "111-222-333",
+                "contactPreference" : "EMAIL",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentNameTooLong(){
+        return
+            """
+            {
+                "customerName" : "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+                "customerEmail" : "john@email.com",
+                "customerPhone" : "111-222-333",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentPhoneTooLong(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerEmail" : "john@email.com",
+                "customerPhone" : "1111111111111",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 5
+            }
+            """;
+    }
+
+    public static String createAppointmentInvalidAnimalCount(){
+        return
+            """
+            {
+                "customerName" : "John Doe",
+                "customerEmail" : "john@email.com",
+                "customerPhone" : "111-222-333",
+                "contactPreference" : "EMAIL",
+                "animalType" : "BEEF",
+                "animalCount" : 0
+            }
+            """;
+    }
 }
