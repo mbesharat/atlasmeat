@@ -105,6 +105,12 @@ public abstract class IntegrationTestBase {
         return assertJsonResponse(actions);
     }
 
+    protected ResultActions patchWithParam(String urlTemplate, String paramName, String paramValue, Object... uriVars) throws Exception{
+        ResultActions actions = mvc.perform(patch(urlTemplate, uriVars)
+                .param(paramName, paramValue));
+        return assertJsonResponse(actions);
+    }
+
     protected ResultActions deleteJson(String urlTemplate, Object... uriVars) throws Exception{
         return mvc.perform(delete(urlTemplate, uriVars))
             .andExpect(status().isNoContent());
@@ -171,7 +177,11 @@ public abstract class IntegrationTestBase {
 
 
     //APPOINTMENT DRIVER HELPERS
-    protected Long createAppointment() throws Exception{
+    protected ResultActions createAppointment() throws Exception{
+        return postJson("/appointments", AppointmentFixtures.createValidAppointment());
+    }
+
+    protected Long createAppointmentAndGetId() throws Exception{
 
         String response = postJsonAndReturnBody("/appointments",
                 AppointmentFixtures.createValidAppointment());
@@ -179,6 +189,11 @@ public abstract class IntegrationTestBase {
         return mapper.readTree(response)
                 .get("id")
                 .asLong();
+    }
+
+    protected ResultActions getAppointmentById(Long appointmentId) throws Exception{
+        return  getJson("/appointments/{id}", appointmentId)
+                .andExpect(status().isOk());
     }
 
 }
