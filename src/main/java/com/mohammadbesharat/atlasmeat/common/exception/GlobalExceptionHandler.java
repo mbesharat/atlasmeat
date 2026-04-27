@@ -1,6 +1,7 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotEligibleForHangingWeightException;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFoundException;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransitionException;
 import com.mohammadbesharat.atlasmeat.checkout.exceptions.*;
@@ -84,6 +85,13 @@ public class GlobalExceptionHandler {
         InvalidAppointmentStatusTransitionException exception,
         HttpServletRequest request){
             return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
+    }
+
+    @ExceptionHandler(AppointmentNotEligibleForHangingWeightException.class)
+    public ResponseEntity<ApiError> handleAppointmentNotEligibleForHangingWeight(
+            AppointmentNotEligibleForHangingWeightException exception,
+            HttpServletRequest request){
+        return buildResponse(HttpStatus.CONFLICT, exception.getMessage(), request, null);
     }
 
     @ExceptionHandler(CheckoutLockedException.class)
