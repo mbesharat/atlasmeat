@@ -4,6 +4,7 @@ package com.mohammadbesharat.atlasmeat.appointment.api;
 import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
 import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
 import com.mohammadbesharat.atlasmeat.appointment.dto.CreateAppointmentRequest;
+import com.mohammadbesharat.atlasmeat.appointment.dto.SetHangingWeightRequest;
 import com.mohammadbesharat.atlasmeat.appointment.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -70,6 +71,12 @@ public class AppointmentController {
     public ResponseEntity<AppointmentResponse> updateAppointmentStatus(@PathVariable Long appointmentId, @RequestBody AppointmentStatus status){
         AppointmentResponse response = appointmentService.updateAppointmentStatus(appointmentId, status);
         return ResponseEntity.ok(response);
+    }
+
+    //set hanging weight
+    @PatchMapping("/{appointmentId}/hanging-weight")
+    public ResponseEntity<AppointmentResponse> setHangingWeight(@PathVariable Long appointmentId, @Valid @RequestBody SetHangingWeightRequest req){
+        return ResponseEntity.ok(appointmentService.setHangingWeight(appointmentId, req.hangingWeight()));
     }
 
 }
