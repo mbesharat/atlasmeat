@@ -38,7 +38,8 @@ public class AppointmentService {
                 appointment.getAnimalCount(),
                 appointment.getScheduledDate(),
                 appointment.getStatus(),
-                appointment.getCheckoutId()
+                appointment.getCheckoutId(),
+                appointment.getHangingWeight()
         );
     }
 
