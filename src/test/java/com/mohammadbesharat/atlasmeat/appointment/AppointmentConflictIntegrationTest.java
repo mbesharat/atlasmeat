@@ -87,7 +87,57 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
                         .value("Conflict"))
                 .andExpect(jsonPath("$.message")
                         .value("CUT_SHEET_OPEN cannot be changed to SCHEDULED"));
+    }
 
+    @Test
+    void return409SettingHangingWeightToInvalidStatus() throws Exception {
+
+        Long appointmentId = createAppointmentAndGetId();
+
+        //setHangingWeight on REQUESTED
+        patchJson(
+                "/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setHangingWeight(),
+                appointmentId
+        )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status")
+                        .value(409))
+                .andExpect(jsonPath("$.error")
+                        .value("Conflict"))
+                .andExpect(jsonPath("$.message")
+                        .value("Appointment with id " + appointmentId + " with status REQUESTED cannot have hanging weight set"));
+
+
+        //setHangingWeight on SCHEDULED
+        advanceStatus(appointmentId, "SCHEDULED");
+        patchJson(
+                "/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setHangingWeight(),
+                appointmentId
+        )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status")
+                        .value(409))
+                .andExpect(jsonPath("$.error")
+                        .value("Conflict"))
+                .andExpect(jsonPath("$.message")
+                        .value("Appointment with id " + appointmentId + " with status SCHEDULED cannot have hanging weight set"));
+
+        //setHangingWeight on CANCELLED
+        advanceStatus(appointmentId, "CANCELLED");
+        patchJson(
+                "/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setHangingWeight(),
+                appointmentId
+        )
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status")
+                        .value(409))
+                .andExpect(jsonPath("$.error")
+                        .value("Conflict"))
+                .andExpect(jsonPath("$.message")
+                        .value("Appointment with id " + appointmentId + " with status CANCELLED cannot have hanging weight set"));
     }
 
 

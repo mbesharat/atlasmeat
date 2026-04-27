@@ -107,6 +107,38 @@ class AppointmentValidationIntegrationTest extends IntegrationTestBase {
                         .value("Bad Request"))
                 .andExpect(jsonPath("$.validationErrors[0].message")
                         .value("animal count must be at least 1"));
+
+        //null hanging weight
+        postJson("/appointments", AppointmentFixtures.setInvalidHangingWeightNull())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status")
+                        .value(400))
+                .andExpect(jsonPath("$.error")
+                        .value("Bad Request"))
+                .andExpect(jsonPath("$.validationErrors[0].message")
+                        .value("hanging weight is required"));
+
+        //zero hanging weight
+        postJson("/appointments", AppointmentFixtures.setInvalidHangingWeightZero())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status")
+                        .value(400))
+                .andExpect(jsonPath("$.error")
+                        .value("Bad Request"))
+                .andExpect(jsonPath("$.validationErrors[0].message")
+                        .value("hanging weight must be greater than 0"));
+
+        //negative hanging weight
+        postJson("/appointments", AppointmentFixtures.setInvalidHangingWeightTooLong())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status")
+                        .value(400))
+                .andExpect(jsonPath("$.error")
+                        .value("Bad Request"))
+                .andExpect(jsonPath("$.validationErrors[0].message")
+                        .value("hanging weight must have at most 5 digits before decimal and 2 after"));
     }
+
+
 
 }

@@ -9,6 +9,6 @@ public class AppointmentNotEligibleForHangingWeightException extends RuntimeExce
     }
 
     public AppointmentNotEligibleForHangingWeightException(Long id, AppointmentStatus status){
-        super("Appointment with id " + id + " with status " + status + " cannot have hanging weight set.");
+        super("Appointment with id " + id + " with status " + status + " cannot have hanging weight set");
     }
 }
