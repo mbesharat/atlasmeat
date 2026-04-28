@@ -4,6 +4,7 @@ import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
 import com.mohammadbesharat.atlasmeat.appointment.domain.ContactType;
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record AppointmentResponse(
@@ -16,6 +17,7 @@ public record AppointmentResponse(
         int animalCount,
         LocalDate scheduledDate,
         AppointmentStatus status,
-        Long checkoutId
+        Long checkoutId,
+        BigDecimal hangingWeight
 
 ) {}

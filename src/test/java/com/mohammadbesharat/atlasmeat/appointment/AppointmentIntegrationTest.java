@@ -43,6 +43,7 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         assertBaseFields(setDateResult);
         setDateResult.andExpect(jsonPath("$.scheduledDate").value("2026-06-15"));
 
+
         //PATCH - update appointment status REQUESTED -> SCHEDULED -> DROPPED OFF -> CUT SHEET OPEN
         ResultActions scheduleResult = patchJson(
                 "/appointments/{appointmentId}/status",
@@ -54,6 +55,7 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.scheduledDate").value("2026-06-15"))
                 .andExpect(jsonPath("$.status").value("SCHEDULED"));
 
+
         //SCHEDULED -> DROPPED OFF
         ResultActions dropOffResult = patchJson(
                 "/appointments/{appointmentId}/status",
@@ -64,6 +66,19 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         dropOffResult
                 .andExpect(jsonPath("$.scheduledDate").value("2026-06-15"))
                 .andExpect(jsonPath("$.status").value("DROPPED_OFF"));
+
+
+        //PATCH - setHangingWeight
+        ResultActions hangingWeightResult = patchJson(
+                "/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setHangingWeight(),
+                appointmentId);
+        assertBaseFields(hangingWeightResult);
+        hangingWeightResult
+                .andExpect(jsonPath("$.scheduledDate").value("2026-06-15"))
+                .andExpect(jsonPath("$.status").value("DROPPED_OFF"))
+                .andExpect(jsonPath("$.hangingWeight").value(25.5));
+
 
         //DROPPED OFF -> CUT SHEET OPEN
         ResultActions cutSheetResult = patchJson(

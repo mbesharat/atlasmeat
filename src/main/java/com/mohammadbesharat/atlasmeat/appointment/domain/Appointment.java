@@ -4,6 +4,7 @@ package com.mohammadbesharat.atlasmeat.appointment.domain;
 import com.mohammadbesharat.atlasmeat.order.domain.AnimalType;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -24,6 +25,8 @@ public class Appointment {
     private AppointmentStatus status;
     private Long checkoutId;
     private LocalDate scheduledDate;
+    @Column(precision = 7, scale = 2)
+    private BigDecimal hangingWeight;
 
     public Long getId() {return id;}
     public String getCustomerName() {return customerName;}
@@ -35,6 +38,7 @@ public class Appointment {
     public AppointmentStatus getStatus() {return status;}
     public Long getCheckoutId() {return checkoutId;}
     public LocalDate getScheduledDate() {return scheduledDate;}
+    public  BigDecimal getHangingWeight() {return hangingWeight;}
 
     public void setCustomerName(String customerName) {this.customerName = customerName;}
     public void setCustomerEmail(String customerEmail) {this.customerEmail = customerEmail;}
@@ -45,5 +49,6 @@ public class Appointment {
     public void setStatus(AppointmentStatus status) {this.status = status;}
     public void setCheckoutId(Long checkoutId) {this.checkoutId = checkoutId;}
     public void setScheduledDate(LocalDate scheduledDate) {this.scheduledDate = scheduledDate;}
+    public void setHangingWeight(BigDecimal hangingWeight) {this.hangingWeight = hangingWeight;}
 
 }

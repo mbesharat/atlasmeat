@@ -44,4 +44,17 @@ public class AppointmentNotFoundIntegrationTest extends IntegrationTestBase {
                         .value("Appointment not found with id " + 9999));
 
     }
+
+    //return 404 when trying to set hanging weight with non existentId
+    @Test
+    void setHangingWeightWithNonExistentId() throws Exception{
+        patchJson(
+                "/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setHangingWeight(),
+                9999
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message")
+                        .value("Appointment not found with id " + 9999));
+    }
 }

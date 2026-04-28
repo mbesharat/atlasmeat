@@ -5,6 +5,7 @@ import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
 import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
 import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
 import com.mohammadbesharat.atlasmeat.appointment.dto.CreateAppointmentRequest;
+import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotEligibleForHangingWeightException;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFoundException;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransitionException;
 import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Service
@@ -38,7 +40,8 @@ public class AppointmentService {
                 appointment.getAnimalCount(),
                 appointment.getScheduledDate(),
                 appointment.getStatus(),
-                appointment.getCheckoutId()
+                appointment.getCheckoutId(),
+                appointment.getHangingWeight()
         );
     }
 
@@ -118,6 +121,21 @@ public class AppointmentService {
                 new AppointmentNotFoundException(appointmentId));
 
         appointment.setScheduledDate(date);
+        return toAppointmentResponse(appointmentRepository.save(appointment));
+    }
+
+    @Transactional
+    public AppointmentResponse setHangingWeight(Long appointmentId, BigDecimal hangingWeight){
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() ->
+                new AppointmentNotFoundException(appointmentId));
+
+        AppointmentStatus status = appointment.getStatus();
+
+        boolean eligible = status == AppointmentStatus.DROPPED_OFF || status == AppointmentStatus.CUT_SHEET_OPEN;
+        if(!eligible){
+            throw new AppointmentNotEligibleForHangingWeightException(appointmentId, status);
+        }
+        appointment.setHangingWeight(hangingWeight);
         return toAppointmentResponse(appointmentRepository.save(appointment));
     }
 

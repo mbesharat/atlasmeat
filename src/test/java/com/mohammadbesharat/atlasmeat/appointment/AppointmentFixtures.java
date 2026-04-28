@@ -138,4 +138,40 @@ public final class AppointmentFixtures {
             }
             """;
     }
+
+    public static String setHangingWeight(){
+        return
+            """
+            {
+                "hangingWeight" : 25.5
+            }
+            """;
+    }
+
+    public static String setInvalidHangingWeightNull(){
+        return
+                """
+                {
+                    "hangingWeight" : null
+                }
+               """;
+    }
+
+    public static String setInvalidHangingWeightZero(){
+        return
+                """
+                {
+                    "hangingWeight" : 0
+                }
+                """;
+    }
+
+    public static String setInvalidHangingWeightTooLong(){
+        return
+                """
+                {
+                    "hangingWeight" : 9999999999.9999999999
+                }
+                """;
+    }
 }

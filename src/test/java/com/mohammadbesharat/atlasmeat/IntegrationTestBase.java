@@ -12,6 +12,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -25,7 +26,6 @@ import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
 
-@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -43,8 +43,9 @@ public abstract class IntegrationTestBase {
     
     static PostgreSQLContainer<?> postgres; 
     static{
-            postgres = new PostgreSQLContainer<>("postgres:16-alpine");
-            postgres.start();
+        postgres = new PostgreSQLContainer<>("postgres:16-alpine")
+                .waitingFor(Wait.forLogMessage(".*database system is ready to accept connections.*\\s", 2));
+        postgres.start();
     }
 
     @DynamicPropertySource
