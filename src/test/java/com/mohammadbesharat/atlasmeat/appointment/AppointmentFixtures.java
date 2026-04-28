@@ -152,9 +152,9 @@ public final class AppointmentFixtures {
         return
                 """
                 {
-                    "hangingWeight" :\s
+                    "hangingWeight" : null
                 }
-               \s""";
+               """;
     }
 
     public static String setInvalidHangingWeightZero(){

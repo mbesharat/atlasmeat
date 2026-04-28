@@ -3,6 +3,7 @@ package com.mohammadbesharat.atlasmeat.appointment;
 import com.mohammadbesharat.atlasmeat.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 
+import static com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus.DROPPED_OFF;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -108,8 +109,16 @@ class AppointmentValidationIntegrationTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.validationErrors[0].message")
                         .value("animal count must be at least 1"));
 
+        //tests for invalid hanging weight
+        Long appointmentId = createAppointmentAndGetId();
+        patchJson("/appointments/{appointmentId}/status", "\"" + DROPPED_OFF + "\"", appointmentId);
+
         //null hanging weight
-        postJson("/appointments", AppointmentFixtures.setInvalidHangingWeightNull())
+        patchJson(
+                "/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setInvalidHangingWeightNull(),
+                appointmentId
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status")
                         .value(400))
@@ -119,17 +128,23 @@ class AppointmentValidationIntegrationTest extends IntegrationTestBase {
                         .value("hanging weight is required"));
 
         //zero hanging weight
-        postJson("/appointments", AppointmentFixtures.setInvalidHangingWeightZero())
+        patchJson("/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setInvalidHangingWeightZero(),
+                appointmentId
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status")
                         .value(400))
                 .andExpect(jsonPath("$.error")
                         .value("Bad Request"))
                 .andExpect(jsonPath("$.validationErrors[0].message")
-                        .value("hanging weight must be greater than 0"));
+                        .value("hanging weight must be greater than zero"));
 
-        //negative hanging weight
-        postJson("/appointments", AppointmentFixtures.setInvalidHangingWeightTooLong())
+        //hanging weight too long
+        patchJson("/appointments/{appointmentId}/hanging-weight",
+                AppointmentFixtures.setInvalidHangingWeightTooLong(),
+                appointmentId
+        )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status")
                         .value(400))

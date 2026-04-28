@@ -77,7 +77,7 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         hangingWeightResult
                 .andExpect(jsonPath("$.scheduledDate").value("2026-06-15"))
                 .andExpect(jsonPath("$.status").value("DROPPED_OFF"))
-                .andExpect(jsonPath("$.hangingWeight").value(AppointmentFixtures.setHangingWeight()));
+                .andExpect(jsonPath("$.hangingWeight").value(25.5));
 
 
         //DROPPED OFF -> CUT SHEET OPEN
