@@ -1,6 +1,11 @@
 package com.mohammadbesharat.atlasmeat.workflow.service;
 
 
+import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
+import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
+import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
+import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentRepository;
+import com.mohammadbesharat.atlasmeat.appointment.service.AppointmentService;
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
@@ -33,10 +38,42 @@ public class WorkflowService {
 
     private final CheckoutService checkoutService;
     private final OrderService orderService;
+    private final AppointmentService appointmentService;
 
-    public WorkflowService(CheckoutService checkoutService, OrderService orderService){
+    public WorkflowService(CheckoutService checkoutService, OrderService orderService, AppointmentService appointmentService){
         this.checkoutService = checkoutService;
         this.orderService = orderService;
+        this.appointmentService = appointmentService;
+    }
+
+    @Transactional
+    public AppointmentResponse updateAppointmentStatus(Long appointmentId, AppointmentStatus status){
+        appointmentService.updateAppointmentStatus(appointmentId, status);
+        AppointmentResponse appointmentResponse = appointmentService.getAppointmentById(appointmentId);
+        Long checkoutId = null;
+
+        if(status == AppointmentStatus.CUT_SHEET_OPEN){
+            CreateCheckoutRequest checkoutRequest = new CreateCheckoutRequest(
+                    appointmentResponse.customerName(),
+                    appointmentResponse.customerPhone(),
+                    appointmentResponse.customerEmail());
+
+            checkoutId = checkoutService.createCheckout(checkoutRequest).getId();
+            appointmentService.linkCheckout(appointmentId, checkoutId);
+        }
+        return new AppointmentResponse(
+                appointmentResponse.id(),
+                appointmentResponse.customerName(),
+                appointmentResponse.customerPhone(),
+                appointmentResponse.customerEmail(),
+                appointmentResponse.contactPreference(),
+                appointmentResponse.animalType(),
+                appointmentResponse.animalCount(),
+                appointmentResponse.scheduledDate(),
+                appointmentResponse.status(),
+                checkoutId == null ? appointmentResponse.checkoutId() : checkoutId,
+                appointmentResponse.hangingWeight()
+        );
     }
 
     private CheckoutResponse toCheckoutResponse(Checkout checkout){

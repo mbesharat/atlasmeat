@@ -139,4 +139,12 @@ public class AppointmentService {
         return toAppointmentResponse(appointmentRepository.save(appointment));
     }
 
+    @Transactional
+    public void linkCheckout(Long appointmentId, Long checkoutId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() ->
+                new AppointmentNotFoundException(appointmentId));
+
+        appointment.setCheckoutId(checkoutId);
+    }
+
 }

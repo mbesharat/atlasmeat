@@ -89,10 +89,12 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         assertBaseFields(cutSheetResult);
         cutSheetResult
                 .andExpect(jsonPath("$.scheduledDate").value("2026-06-15"))
-                .andExpect(jsonPath("$.status").value("CUT_SHEET_OPEN"));
+                .andExpect(jsonPath("$.status").value("CUT_SHEET_OPEN"))
+                .andExpect(jsonPath("$.checkoutId").exists());
 
-
-
+        Long checkoutId = mapper.readTree(
+                cutSheetResult.andReturn().getResponse().getContentAsString()).get("checkoutId").asLong();
+        getCheckout(checkoutId);
     }
 
     private void assertBaseFields(ResultActions actions) throws Exception {

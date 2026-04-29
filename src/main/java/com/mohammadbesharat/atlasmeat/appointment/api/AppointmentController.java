@@ -6,6 +6,7 @@ import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
 import com.mohammadbesharat.atlasmeat.appointment.dto.CreateAppointmentRequest;
 import com.mohammadbesharat.atlasmeat.appointment.dto.SetHangingWeightRequest;
 import com.mohammadbesharat.atlasmeat.appointment.service.AppointmentService;
+import com.mohammadbesharat.atlasmeat.workflow.service.WorkflowService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +23,10 @@ import java.time.LocalDate;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
-    public AppointmentController(AppointmentService service) {
+    private final WorkflowService workflowService;
+    public AppointmentController(AppointmentService service, WorkflowService workflowService) {
         this.appointmentService = service;
+        this.workflowService = workflowService;
     }
 
     //create appointment
@@ -69,7 +72,7 @@ public class AppointmentController {
     //update appointment status
     @PatchMapping("/{appointmentId}/status")
     public ResponseEntity<AppointmentResponse> updateAppointmentStatus(@PathVariable Long appointmentId, @RequestBody AppointmentStatus status){
-        AppointmentResponse response = appointmentService.updateAppointmentStatus(appointmentId, status);
+        AppointmentResponse response = workflowService.updateAppointmentStatus(appointmentId, status);
         return ResponseEntity.ok(response);
     }
 
