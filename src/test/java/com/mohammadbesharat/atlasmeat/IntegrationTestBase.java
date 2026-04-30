@@ -2,6 +2,7 @@ package com.mohammadbesharat.atlasmeat;
 
 import com.mohammadbesharat.atlasmeat.appointment.AppointmentFixtures;
 import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
+import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentRepository;
 import com.mohammadbesharat.atlasmeat.checkout.CheckoutFixtures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +26,7 @@ import com.mohammadbesharat.atlasmeat.order.domain.Cut;
 import com.mohammadbesharat.atlasmeat.order.repo.CutRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderItemRepository;
 import com.mohammadbesharat.atlasmeat.order.repo.OrderRepository;
+import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -40,6 +42,7 @@ public abstract class IntegrationTestBase {
     @Autowired OrderRepository orderRepository;
     @Autowired OrderItemRepository orderItemRepository;
     @Autowired protected CutRepository cutRepository;
+    @Autowired AppointmentRepository appointmentRepository;
     
     static PostgreSQLContainer<?> postgres; 
     static{
@@ -63,6 +66,7 @@ public abstract class IntegrationTestBase {
         orderRepository.deleteAll();
         orderItemRepository.deleteAll();
         cutRepository.deleteAll();
+        appointmentRepository.deleteAll();
     }
     
     protected long seedBeefCut(String code, String displayName){
