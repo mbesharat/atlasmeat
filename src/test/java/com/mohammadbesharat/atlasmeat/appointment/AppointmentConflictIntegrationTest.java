@@ -140,16 +140,6 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
                         .value("Appointment with id " + appointmentId + " with status CANCELLED cannot have hanging weight set"));
     }
 
-
-
-
-
-
-
-
-
-
-
     private void advanceStatus(Long appointmentId, String status) throws Exception {
         patchJson("/appointments/{appointmentId}/status", AppointmentFixtures.setStatus(status), appointmentId);
     }

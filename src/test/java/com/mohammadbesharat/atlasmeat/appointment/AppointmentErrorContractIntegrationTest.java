@@ -35,7 +35,7 @@ class AppointmentErrorContractIntegrationTest extends IntegrationTestBase {
 
         Long appointmentId = createAppointmentAndGetId();
 
-        patchJson("/appointments/{appointmentId}/status", "\"DROPPED_OFF\"", appointmentId)
+        patchJson("/appointments/{appointmentId}/status", AppointmentFixtures.updateStatusDroppedOff(), appointmentId)
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.error").value("Conflict"))

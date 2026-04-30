@@ -175,6 +175,24 @@ public final class AppointmentFixtures {
                 """;
     }
 
+    public static String setScheduledDate(){
+        return
+            """
+            {
+                "scheduledDate" : "2026-06-15"
+            }
+            """;
+    }
+
+    public static String setInvalidDate(){
+        return
+                """
+                {
+                    "scheduledDate" : "2026-060-151"
+                }
+                """;
+    }
+
     public static String setStatus(String status){
         return
            """
@@ -182,6 +200,15 @@ public final class AppointmentFixtures {
                "status" : "%s"
            }
            """.formatted(status);
+    }
+
+    public static String setInvalidStatus(){
+        return
+            """
+            {
+                "status" : "OPEN"
+            }
+            """;
     }
 
     public static String updateStatusRequested(){return setStatus("REQUESTED");}

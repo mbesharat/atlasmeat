@@ -109,9 +109,31 @@ class AppointmentValidationIntegrationTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$.validationErrors[0].message")
                         .value("animal count must be at least 1"));
 
-        //tests for invalid hanging weight
         Long appointmentId = createAppointmentAndGetId();
-        patchJson("/appointments/{appointmentId}/status", "\"" + DROPPED_OFF + "\"", appointmentId);
+
+        //test for invalid status enum
+        patchJson("/appointments/{appointmentId}/status", AppointmentFixtures.setInvalidStatus(), appointmentId)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status")
+                        .value(400))
+                .andExpect(jsonPath("$.error")
+                        .value("Bad Request"))
+                .andExpect(jsonPath("$.message")
+                        .value("Invalid enum type. Valid values include: [REQUESTED, SCHEDULED, DROPPED_OFF, CUT_SHEET_OPEN, CANCELLED]"));
+
+        //test for invalid scheduledDate
+        patchJson("/appointments/{appointmentId}/scheduled-date", AppointmentFixtures.setInvalidDate(), appointmentId)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status")
+                        .value(400))
+                .andExpect(jsonPath("$.error")
+                        .value("Bad Request"))
+                .andExpect(jsonPath("$.message")
+                        .value("Invalid date. Must in the format yyyy-MM-dd"));
+
+
+        //tests for invalid hanging weight
+        patchJson("/appointments/{appointmentId}/status", AppointmentFixtures.updateStatusDroppedOff(), appointmentId);
 
         //null hanging weight
         patchJson(
