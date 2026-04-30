@@ -70,7 +70,6 @@ public class CheckoutService {
     }
 
     public Page<Checkout> searchCheckouts(
-        Long checkoutId,
         CheckoutStatus status,
         String customerName,
         String customerPhone,

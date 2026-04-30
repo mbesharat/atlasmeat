@@ -181,7 +181,6 @@ public class WorkflowService {
     }
 
     public Page<CheckoutResponse> searchCheckouts(
-            Long checkoutId,
             CheckoutStatus status,
             String customerName,
             String customerPhone,
@@ -191,7 +190,6 @@ public class WorkflowService {
             Pageable pageable
     ){
         Page<Checkout> page = checkoutService.searchCheckouts(
-                checkoutId,
                 status,
                 customerName,
                 customerPhone,
