@@ -42,9 +42,4 @@ public final class CheckoutSpecifications {
                 -> cb.like(cb.lower(root.get("customerPhone")), "%" + phone + "%");
     }
 
-    public static Specification<Checkout> hadId(Long id){
-        return (root, query, cb)
-                -> cb.equal(root.get("checkoutId"), id);
-    }
-
 }

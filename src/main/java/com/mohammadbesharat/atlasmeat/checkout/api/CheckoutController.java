@@ -63,7 +63,6 @@ public class CheckoutController {
 
     @GetMapping
     public Page<CheckoutResponse> getCheckouts(
-        @RequestParam(required = false) Long checkoutId,
         @RequestParam(required = false) CheckoutStatus status,
         @RequestParam(required = false) String customerName,
         @RequestParam(required = false) String customerPhone,
@@ -74,7 +73,7 @@ public class CheckoutController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
         @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable)
     {
-        return workflowService.searchCheckouts(checkoutId, status, customerName, customerPhone, customerEmail, from, to, pageable);
+        return workflowService.searchCheckouts(status, customerName, customerPhone, customerEmail, from, to, pageable);
     }
 
 
