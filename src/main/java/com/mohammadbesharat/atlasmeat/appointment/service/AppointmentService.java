@@ -103,7 +103,7 @@ public class AppointmentService {
     }
 
     @Transactional
-    public AppointmentResponse updateAppointmentStatus(Long appointmentId, AppointmentStatus status) {
+    public void updateAppointmentStatus(Long appointmentId, AppointmentStatus status) {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() ->
                 new AppointmentNotFoundException(appointmentId));
         AppointmentStatus currentStatus = appointment.getStatus();
@@ -112,7 +112,6 @@ public class AppointmentService {
             throw new InvalidAppointmentStatusTransitionException(currentStatus, status);
         }
         appointment.setStatus(status);
-        return toAppointmentResponse(appointment);
     }
 
     @Transactional
