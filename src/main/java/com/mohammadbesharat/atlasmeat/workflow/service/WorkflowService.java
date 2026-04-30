@@ -152,7 +152,7 @@ public class WorkflowService {
             Map<Long, Integer> cutQty = orderService.mergeCutQuantities(request.items());
             orderService.replaceOrderItems(order, cutQty);
         }
-        return toCheckoutResponse(checkoutService.saveCheckout(checkout));
+        return toCheckoutResponse(checkout);
     }
 
     @Transactional
@@ -164,7 +164,7 @@ public class WorkflowService {
 
         OrderItem item = orderService.findByIdAndOrderIdAndCheckoutId(orderItemId, orderId, checkoutId);
         item.setQuantity(request.quantity());
-        return toCheckoutResponse(checkoutService.saveCheckout(checkout));
+        return toCheckoutResponse(checkout);
     }
 
     public void removeItemFromOrder(Long checkoutId, Long orderId, Long orderItemId){

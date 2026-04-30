@@ -66,7 +66,6 @@ public class CheckoutService {
     @Transactional
     public void removeOrderFromCheckout(Checkout checkout, Order order){
         checkout.removeOrder(order);
-        saveCheckout(checkout);
     }
 
     public Page<Checkout> searchCheckouts(
@@ -112,7 +111,7 @@ public class CheckoutService {
 
     @Transactional
     public Checkout updateCheckoutStatus(Long checkoutId, CheckoutStatus newStatus){
-        
+
         Checkout checkout = getCheckoutById(checkoutId);
         CheckoutStatus currentStatus = checkout.getStatus();
         if(!isAllowedTransition(currentStatus, newStatus)){
@@ -120,7 +119,7 @@ public class CheckoutService {
         }
 
         checkout.setStatus(newStatus);
-        return checkoutRepository.save(checkout);
+        return checkout;
     }
 
     private boolean isAllowedTransition(CheckoutStatus current, CheckoutStatus next){
