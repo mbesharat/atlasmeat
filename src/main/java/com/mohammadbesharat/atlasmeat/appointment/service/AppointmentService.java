@@ -112,7 +112,7 @@ public class AppointmentService {
             throw new InvalidAppointmentStatusTransitionException(currentStatus, status);
         }
         appointment.setStatus(status);
-        return toAppointmentResponse(appointmentRepository.save(appointment));
+        return toAppointmentResponse(appointment);
     }
 
     @Transactional
@@ -121,7 +121,7 @@ public class AppointmentService {
                 new AppointmentNotFoundException(appointmentId));
 
         appointment.setScheduledDate(date);
-        return toAppointmentResponse(appointmentRepository.save(appointment));
+        return toAppointmentResponse(appointment);
     }
 
     @Transactional
@@ -136,7 +136,7 @@ public class AppointmentService {
             throw new AppointmentNotEligibleForHangingWeightException(appointmentId, status);
         }
         appointment.setHangingWeight(hangingWeight);
-        return toAppointmentResponse(appointmentRepository.save(appointment));
+        return toAppointmentResponse(appointment);
     }
 
     @Transactional
