@@ -1,7 +1,7 @@
 package com.mohammadbesharat.atlasmeat.order.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "order_items")
@@ -19,7 +19,7 @@ public class OrderItem {
     @JoinColumn(name = "cut_id", nullable = false)
     private Cut cut;
 
-    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 
 
