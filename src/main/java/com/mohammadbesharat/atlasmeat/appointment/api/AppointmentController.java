@@ -62,14 +62,14 @@ public class AppointmentController {
 
     //set appointment date
     @PatchMapping("/{appointmentId}/scheduled-date")
-    public ResponseEntity<AppointmentResponse> setScheduledDate(@PathVariable Long appointmentId, @RequestBody SetScheduledDateRequest req){
+    public ResponseEntity<AppointmentResponse> setScheduledDate(@PathVariable Long appointmentId, @Valid @RequestBody SetScheduledDateRequest req){
         AppointmentResponse response = appointmentService.setAppointmentDate(appointmentId, req.scheduledDate());
         return ResponseEntity.ok(response);
     }
 
     //update appointment status
     @PatchMapping("/{appointmentId}/status")
-    public ResponseEntity<AppointmentResponse> updateAppointmentStatus(@PathVariable Long appointmentId, @RequestBody UpdateAppointmentStatusRequest req){
+    public ResponseEntity<AppointmentResponse> updateAppointmentStatus(@PathVariable Long appointmentId, @Valid @RequestBody UpdateAppointmentStatusRequest req){
         AppointmentResponse response = workflowService.updateAppointmentStatus(appointmentId, req.status());
         return ResponseEntity.ok(response);
     }
