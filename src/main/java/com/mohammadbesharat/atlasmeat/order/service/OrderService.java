@@ -57,7 +57,7 @@ public class OrderService {
         return cutRepository.findById(cutId).orElseThrow(() -> new CutNotFoundException(cutId));
     }
 
-    private OrderResponse toDto(Order order){
+    public OrderResponse toDto(Order order){
         List<OrderItemResponse> itemDtos = order.getItems().stream()
                 .sorted(Comparator.comparing(OrderItem::getId))
                 .map(this::toItemDto).toList();
