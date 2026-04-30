@@ -1,6 +1,5 @@
 package com.mohammadbesharat.atlasmeat.common.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotEligibleForHangingWeightException;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.AppointmentNotFoundException;
 import com.mohammadbesharat.atlasmeat.appointment.exceptions.InvalidAppointmentStatusTransitionException;
