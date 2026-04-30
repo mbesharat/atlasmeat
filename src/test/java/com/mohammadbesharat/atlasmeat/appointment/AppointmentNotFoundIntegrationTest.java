@@ -19,10 +19,9 @@ public class AppointmentNotFoundIntegrationTest extends IntegrationTestBase {
     //return 404 when setScheduleDate with nonexistent id
     @Test
     void setScheduledDateWithNonExistentId() throws Exception{
-        patchWithParam(
+        patchJson(
                 "/appointments/{appointmentId}/scheduled-date",
-                "scheduledDate",
-                "2026-06-15",
+                AppointmentFixtures.setScheduledDate(),
                 9999
         )
                 .andExpect(status().isNotFound())
@@ -36,7 +35,7 @@ public class AppointmentNotFoundIntegrationTest extends IntegrationTestBase {
     void updateAppointmentStatusWithNonExistentId() throws Exception{
         patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"SCHEDULED\"",
+                AppointmentFixtures.updateStatusScheduled(),
                 9999
         )
                 .andExpect(status().isNotFound())

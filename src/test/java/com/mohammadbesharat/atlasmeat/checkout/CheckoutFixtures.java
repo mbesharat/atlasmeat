@@ -133,7 +133,7 @@ public final class CheckoutFixtures {
         """
         {
             "status" : "%s"
-        }        
+        }
         """.formatted(status);
     }
 

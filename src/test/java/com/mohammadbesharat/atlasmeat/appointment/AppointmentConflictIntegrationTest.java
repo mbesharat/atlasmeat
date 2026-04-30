@@ -13,7 +13,7 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
 
         patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"DROPPED_OFF\"",
+                AppointmentFixtures.updateStatusDroppedOff(),
                 appointmentId
         )
                 .andExpect(status().isConflict())
@@ -34,7 +34,7 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
 
         patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"CANCELLED\"",
+                AppointmentFixtures.updateStatusCancelled(),
                 appointmentId
         )
                 .andExpect(status().isConflict())
@@ -55,7 +55,7 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
 
         patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"SCHEDULED\"",
+                AppointmentFixtures.updateStatusScheduled(),
                 appointmentId
         )
                 .andExpect(status().isConflict())
@@ -77,7 +77,7 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
 
         patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"SCHEDULED\"",
+                AppointmentFixtures.updateStatusScheduled(),
                 appointmentId
         )
                 .andExpect(status().isConflict())
@@ -140,17 +140,7 @@ class AppointmentConflictIntegrationTest extends IntegrationTestBase {
                         .value("Appointment with id " + appointmentId + " with status CANCELLED cannot have hanging weight set"));
     }
 
-
-
-
-
-
-
-
-
-
-
     private void advanceStatus(Long appointmentId, String status) throws Exception {
-        patchJson("/appointments/{appointmentId}/status", "\"" + status + "\"", appointmentId);
+        patchJson("/appointments/{appointmentId}/status", AppointmentFixtures.setStatus(status), appointmentId);
     }
 }

@@ -34,10 +34,9 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
 
 
         //PATCH - set appointment date
-        ResultActions setDateResult = patchWithParam(
+        ResultActions setDateResult = patchJson(
                 "/appointments/{appointmentId}/scheduled-date",
-                "scheduledDate",
-                "2026-06-15",
+                AppointmentFixtures.setScheduledDate(),
                 appointmentId
         );
         assertBaseFields(setDateResult);
@@ -47,7 +46,7 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         //PATCH - update appointment status REQUESTED -> SCHEDULED -> DROPPED OFF -> CUT SHEET OPEN
         ResultActions scheduleResult = patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"SCHEDULED\"",
+                AppointmentFixtures.updateStatusScheduled(),
                 appointmentId
         );
         assertBaseFields(scheduleResult);
@@ -59,7 +58,7 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         //SCHEDULED -> DROPPED OFF
         ResultActions dropOffResult = patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"DROPPED_OFF\"",
+                AppointmentFixtures.updateStatusDroppedOff(),
                 appointmentId
         );
         assertBaseFields(dropOffResult);
@@ -83,7 +82,7 @@ public class AppointmentIntegrationTest extends IntegrationTestBase {
         //DROPPED OFF -> CUT SHEET OPEN
         ResultActions cutSheetResult = patchJson(
                 "/appointments/{appointmentId}/status",
-                "\"CUT_SHEET_OPEN\"",
+                AppointmentFixtures.updateStatusCutSheetOpen(),
                 appointmentId
         );
         assertBaseFields(cutSheetResult);
