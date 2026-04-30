@@ -73,18 +73,10 @@ public class WorkflowService {
     }
 
     private CheckoutResponse toCheckoutResponse(Checkout checkout){
-        List<OrderResponse> orderDtos = checkout.getOrders().stream().map(order -> {
-                List<OrderItemResponse> itemDtos = order.getItems().stream()
-                        .sorted(Comparator.comparing(OrderItem::getId)).map(orderService::toItemDto).toList();
+        List<OrderResponse> orderDtos = checkout.getOrders().stream().map(orderService::toDto).toList();
 
-                return new OrderResponse(
-                        order.getId(),
-                        order.getAnimalType(),
-                        itemDtos
-                );
 
-        })
-        .toList();
+
         return new CheckoutResponse(
                 checkout.getId(),
                 checkout.getCustomerName(),
