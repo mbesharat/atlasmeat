@@ -26,7 +26,6 @@ import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
-import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
 import com.mohammadbesharat.atlasmeat.order.dto.CreateOrderRequest;
 
 import org.springframework.data.domain.Sort;
@@ -35,15 +34,10 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/checkouts")
 public class CheckoutController {
-    
-    private final CheckoutService checkoutService;
+
     private final WorkflowService workflowService;
 
-    public CheckoutController(
-            CheckoutService checkoutService,
-            WorkflowService workflowService
-    ){
-        this.checkoutService = checkoutService;
+    public CheckoutController(WorkflowService workflowService){
         this.workflowService = workflowService;
     }
 
