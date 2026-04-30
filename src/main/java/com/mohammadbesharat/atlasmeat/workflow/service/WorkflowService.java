@@ -1,16 +1,13 @@
 package com.mohammadbesharat.atlasmeat.workflow.service;
 
 
-import com.mohammadbesharat.atlasmeat.appointment.domain.Appointment;
 import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
 import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
-import com.mohammadbesharat.atlasmeat.appointment.repo.AppointmentRepository;
 import com.mohammadbesharat.atlasmeat.appointment.service.AppointmentService;
 import com.mohammadbesharat.atlasmeat.checkout.domain.Checkout;
 import com.mohammadbesharat.atlasmeat.checkout.domain.CheckoutStatus;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CheckoutResponse;
 import com.mohammadbesharat.atlasmeat.checkout.dto.CreateCheckoutRequest;
-import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateCheckoutStatusRequest;
 import com.mohammadbesharat.atlasmeat.checkout.dto.UpdateItemRequest;
 import com.mohammadbesharat.atlasmeat.order.dto.UpdateOrderRequest;
 import com.mohammadbesharat.atlasmeat.checkout.service.CheckoutService;
@@ -31,7 +28,6 @@ import java.util.Comparator;
 
 import java.util.*;
 
-import static java.util.Comparator.comparing;
 
 @Service
 public class WorkflowService {
