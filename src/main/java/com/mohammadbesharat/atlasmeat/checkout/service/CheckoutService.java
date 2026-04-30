@@ -37,7 +37,6 @@ public class CheckoutService {
         checkout.setCustomerName(req.customerName());
         checkout.setCustomerPhone(req.customerPhone());
         checkout.setCustomerEmail(req.customerEmail());
-        checkout.setStatus(CheckoutStatus.DRAFT);
 
         return checkoutRepository.save(checkout);
     }
