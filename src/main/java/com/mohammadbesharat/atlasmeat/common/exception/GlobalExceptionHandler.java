@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -150,12 +151,17 @@ public class GlobalExceptionHandler {
         HttpServletRequest request
     ){
         if(exception.getCause() instanceof InvalidFormatException ife){
-            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid enum type. Valid values include: " +
-                    Arrays.toString(ife.getTargetType().getEnumConstants()), request, null);
+            if(ife.getTargetType().isEnum()) {
+                return buildResponse(HttpStatus.BAD_REQUEST, "Invalid enum type. Valid values include: " +
+                        Arrays.toString(ife.getTargetType().getEnumConstants()), request, null);
+            }
+            else if(ife.getTargetType() == LocalDate.class) {
+                return buildResponse(HttpStatus.BAD_REQUEST, "Invalid date. Must in the format yyyy-MM-dd", request, null);
+            }
         }
-        else{
-            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid JSON value", request, null);
-        }
+
+        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid JSON value", request, null);
+
     }
     
     //500 error
