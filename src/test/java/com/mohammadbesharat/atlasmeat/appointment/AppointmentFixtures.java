@@ -150,11 +150,11 @@ public final class AppointmentFixtures {
 
     public static String setInvalidHangingWeightNull(){
         return
-                """
-                {
-                    "hangingWeight" : null
-                }
-               """;
+            """
+            {
+                "hangingWeight" : null
+            }
+           """;
     }
 
     public static String setInvalidHangingWeightZero(){
@@ -174,4 +174,19 @@ public final class AppointmentFixtures {
                 }
                 """;
     }
+
+    public static String setStatus(String status){
+        return
+           """
+           {
+               "status" : "%s"
+           }
+           """.formatted(status);
+    }
+
+    public static String updateStatusRequested(){return setStatus("REQUESTED");}
+    public static String updateStatusScheduled(){return setStatus("SCHEDULED");}
+    public static String updateStatusDroppedOff(){return setStatus("DROPPED_OFF");}
+    public static String updateStatusCutSheetOpen(){return setStatus("CUT_SHEET_OPEN");}
+    public static String updateStatusCancelled(){return setStatus("CANCELLED");}
 }
