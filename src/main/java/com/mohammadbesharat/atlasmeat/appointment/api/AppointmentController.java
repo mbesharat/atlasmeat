@@ -2,9 +2,7 @@ package com.mohammadbesharat.atlasmeat.appointment.api;
 
 
 import com.mohammadbesharat.atlasmeat.appointment.domain.AppointmentStatus;
-import com.mohammadbesharat.atlasmeat.appointment.dto.AppointmentResponse;
-import com.mohammadbesharat.atlasmeat.appointment.dto.CreateAppointmentRequest;
-import com.mohammadbesharat.atlasmeat.appointment.dto.SetHangingWeightRequest;
+import com.mohammadbesharat.atlasmeat.appointment.dto.*;
 import com.mohammadbesharat.atlasmeat.appointment.service.AppointmentService;
 import com.mohammadbesharat.atlasmeat.workflow.service.WorkflowService;
 import jakarta.validation.Valid;
@@ -64,15 +62,15 @@ public class AppointmentController {
 
     //set appointment date
     @PatchMapping("/{appointmentId}/scheduled-date")
-    public ResponseEntity<AppointmentResponse> setScheduledDate(@PathVariable Long appointmentId, @RequestParam LocalDate scheduledDate){
-        AppointmentResponse response = appointmentService.setAppointmentDate(appointmentId, scheduledDate);
+    public ResponseEntity<AppointmentResponse> setScheduledDate(@PathVariable Long appointmentId, @RequestBody SetScheduledDateRequest req){
+        AppointmentResponse response = appointmentService.setAppointmentDate(appointmentId, req.scheduledDate());
         return ResponseEntity.ok(response);
     }
 
     //update appointment status
     @PatchMapping("/{appointmentId}/status")
-    public ResponseEntity<AppointmentResponse> updateAppointmentStatus(@PathVariable Long appointmentId, @RequestBody AppointmentStatus status){
-        AppointmentResponse response = workflowService.updateAppointmentStatus(appointmentId, status);
+    public ResponseEntity<AppointmentResponse> updateAppointmentStatus(@PathVariable Long appointmentId, @RequestBody UpdateAppointmentStatusRequest req){
+        AppointmentResponse response = workflowService.updateAppointmentStatus(appointmentId, req.status());
         return ResponseEntity.ok(response);
     }
 
